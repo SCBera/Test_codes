@@ -1,19 +1,20 @@
 #Python as calculator
-print('You are usng Python as a calculator')
-do = input('Type S for sum, M for multiplication, D for division, \n')
+print('***Welcome to Python as a calculator***')
+#do = input('Type S for sum, M for multiplication, D for division, \n')
 x=input('X=') #input arguments are string
 X=float(x) #string is converted to float
+do = input('Type + for sum, * for multiplication, / for division, \n')
 y=input('Y=')
 Y=float(y)
 
 def calculate(do):
-    if do == 'S':
+    if do == '+':
         SUM = X+Y
         print('SUM of X and Y =', SUM)
-    elif do == 'M':
+    elif do == '*':
         multi = X*Y
         print('Multiplication of X with Y =', multi)
-    elif do == 'D':
+    elif do == '/':
         div = X/Y
         print('Division of X by Y =', div)
     else:
@@ -23,8 +24,7 @@ def calculate(do):
         print('SUM of X and Y =', SUM)
         print('Multiplication of X with Y =', multi)
         print('Division of X by Y =', div)
-        
+
 
 #Function calling
 calculate(do)
-
