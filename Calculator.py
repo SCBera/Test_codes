@@ -1,10 +1,11 @@
 #Python as calculator
-print('***Welcome to Python as a calculator***')
+print('***Welcome to Python calculator***')
 #do = input('Type S for sum, M for multiplication, D for division, \n')
-x=input('X=') #input arguments are string
+x=input('') #input arguments are string
 X=float(x) #string is converted to float
-do = input('Type + for sum, * for multiplication, / for division, \n')
-y=input('Y=')
+#do = input('Type + for sum, * for multiplication, / for division, \n')
+do = input('')
+y=input('')
 Y=float(y)
 
 def calculate(do):
