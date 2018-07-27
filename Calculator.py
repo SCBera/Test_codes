@@ -8,6 +8,7 @@ do = input('')
 y=input('')
 Y=float(y)
 
+#Condition checking
 def calculate(do):
     if do == '+':
         SUM = X+Y
