@@ -2,11 +2,9 @@
 print('***Welcome to Python calculator***')
 #operator = input('Type S for sum, M for multiplication, D for division, \n')
 
-demand = True
-
-#repeat the calculation..start
-if demand == True:
-    x=input() #input arguments are strings
+#start of the loop
+while True:
+    x=input('') #input arguments are strings
     X=float(x) #string is converted to float
 #operator = input('Type + for sum, * for multiplication, / for division, \n')
     operator = input()
@@ -24,21 +22,20 @@ if demand == True:
             div = X/Y
             print('Division of X by Y =', div)
         else:
-            SUM = X+Y
-            multi = X*Y
-            div = X/Y
-            print('SUM of X and Y =', SUM)
-            print('Multiplication of X with Y =', multi)
-            print('Division of X by Y =', div)
+            print('You have not choosen any operation')
+#            SUM = X+Y
+#            multi = X*Y
+#            div = X/Y
+#            print('SUM of X and Y =', SUM)
+#            print('Multiplication of X with Y =', multi)
+#            print('Division of X by Y =', div)
 
 
 #Function calling
     calculate(operator)
 #repeat the calculation
     demand_input = input('Do more calculatioin (Y/N?)')
-    for action in [N]:
-        if action == demand_input:
-            demand = False
-            print(demand)
-else:
-    print('Thank you for using Python calculator')
+    if demand_input == 'N':
+        print('The calculator exits')
+        break
+print('Thank you for using Python calculator') #end of the loop
