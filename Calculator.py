@@ -9,27 +9,41 @@ while True:
 #    operator = input()
 #    y=input()
 #    X, operator, Y = float(input('Please type first number:')), input('Please choose operator from +,-,*,/:'), float(input('Please type second number:')) #all inputs in a row
-    x, operator, y = input('Please type first number:'), input('Please choose operator from +,-,*,/:'), input('Please type second number:') #all inputs in a row
+#    x, operator, y = input('Please type first number:'), input('Please choose operator from +,-,*,/:'), input('Please type second number:') #all inputs in a row
+    x = input('Please type first number:')
+    try:
+        X=float(x) #string is converted to float
+    except:
+        print('Input is not a number')
 
-#    if type(x)==(class 'string'):
-#        print('Input is not a number')
+    operator = input('Please choose operator from +,-,*,/:')
+    try:
+        '-' == 'operator'
+        '+' == 'operator'
+        '*' == 'operator'
+        '/' == 'operator'
+    except:
+        print('Input is not an suitable operator')
 
-    X=float(x) #string is converted to float
-    Y=float(y)
+    y = input('Please type second number:')
+    try:
+        Y=float(y) #string is converted to float
+    except:
+        print('Input is not a number')
 
     def calculate(operator):
         if operator == '+':
             SUM = X+Y
-            print('X+Y=', SUM)
+            print(X,'+',Y,'=', SUM)
         elif operator == '*':
             multi = X*Y
-            print('X*Y=', multi)
+            print(X,'*',Y,'=', multi)
         elif operator == '/':
             div = X/Y
-            print('X/Y=', div)
+            print(X,'/',Y,'=', div)
         elif operator == '-':
             sub = X-Y
-            print('X-Y=', sub)
+            print(X,'-',Y,'=', sub)
         else:
             print('You have not choosen suitable operation e.g., +, -, *, /')
 #            SUM = X+Y
@@ -47,4 +61,5 @@ while True:
     if demand_input == 'n':
         print('The calculator exits')
         break
+
 print('Thank you for using Python calculator') #end of the loop
