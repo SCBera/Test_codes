@@ -9,9 +9,12 @@ def calculate(operator):
     elif operator == '*':
         multi = X*Y
         print(X,'*',Y,'=', multi)
-    elif operator == '/':
-        div = X/Y
-        print(X,'/',Y,'=', div)
+    elif operator == '/':        
+        if Y==0.0:
+            print('Invalid input, Denominator =', Y)
+        else:
+            div = X/Y
+            print(X,'/',Y,'=', div)
     elif operator == '-':
         sub = X-Y
         print(X,'-',Y,'=', sub)
