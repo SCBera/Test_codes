@@ -9,7 +9,7 @@ def calculate(operator):
     elif operator == '*':
         multi = X*Y
         print(X,'*',Y,'=', multi)
-    elif operator == '/':        
+    elif operator == '/':
         if Y==0.0:
             print('Invalid input, Denominator =', Y)
         else:
@@ -31,7 +31,7 @@ while True:
         except:
             print('Input is not a number')
             x_loop=True #loop continues
-            
+
     # y input loop starts
     y_loop=True
     while y_loop:
@@ -42,7 +42,7 @@ while True:
         except:
             print('Input is not a number')
             y_loop=True
-    
+
     # operator input loop starts
     op_loop=True
     while op_loop:
@@ -50,11 +50,11 @@ while True:
         if '-' == operator or '+' == operator or '*' == operator or '/' == operator: #True for valid input
             #print(op_loop)
             op_loop=False
-        else: 
+        else:
             #print(op_loop)
             print('Input is not an suitable operator')
-            op_loop=True            
- 
+            op_loop=True
+
     #Function calling
     calculate(operator)
     #repeat the calculation
@@ -62,5 +62,4 @@ while True:
     if  'y' or 'Y'== demand_input:
         print('The calculator exits')
         break
-
 print('Thank you for using Python calculator') #end of the loop
