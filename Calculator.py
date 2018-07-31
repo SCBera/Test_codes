@@ -1,20 +1,17 @@
 #Python as calculator
 print('*** Welcome to Python calculator ***')
-#operator = input('Type S for sum, M for multiplication, D for division, \n')
 
 def calculate(operator):
     if operator == '+':
         SUM = X+Y
         print(X,'+',Y,'=', SUM)
     elif operator == '*':
-        multi = X*Y
-        print(X,'*',Y,'=', multi)
+        print(X,'*',Y,'=', X*Y)
     elif operator == '/':
         if Y==0.0:
             print('Invalid input, Denominator =', Y)
         else:
-            div = X/Y
-            print(X,'/',Y,'=', div)
+            print(X,'/',Y,'=', X/Y)
     elif operator == '-':
         sub = X-Y
         print(X,'-',Y,'=', sub)
@@ -60,6 +57,7 @@ while True:
     #repeat the calculation
     demand_input = input('Stop calculation? (y):')
     if  'y' or 'Y'== demand_input:
-        print('The calculator exits')
+        print('The calculator exits', demand_input)
         break
+        print('after break')
 print('Thank you for using Python calculator') #end of the loop
