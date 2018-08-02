@@ -15,7 +15,8 @@ def calculate(operator):
     elif operator == '-':
         sub = X-Y
         print(X,'-',Y,'=', sub)
-#start of the loop
+
+#Start of the loop
 while True:
     x_loop=True
     # x input loop starts
@@ -48,10 +49,12 @@ while True:
             #print(op_loop)
             print('Input is not an suitable operator')
             op_loop=True
-    calculate(operator) #Function calling
-    demand_input = input('Stop calculation? (y):') #repeat the calculation
-    if  'y' or 'Y'== demand_input:
-        print('The calculator exits', demand_input)
+
+    #Function calling
+    calculate(operator)
+    #repeat the calculation
+    demand_input = input('Stop calculation? (y):')
+    if  'y' == demand_input or 'Y' == demand_input:
+        print('The calculator exits')
         break
-        print('after break')
-print('Thank you for using Python calculator') #end of the loop
+print('Thank you for using Python calculator') #End of the loop
