@@ -1,7 +1,10 @@
 # Python as calculator
-print('*** Welcome to Python calculator ***')
+# from sys import argv
+# num1, num2, num3 = argv
 
-user_input = input("Please type>")
+print('*** Welcome to Python calculator ***')
+print("PRESS 'CRTL+C' to exit")
+# perform the operation
 
 
 def calculate(operator):
@@ -10,6 +13,8 @@ def calculate(operator):
         print(X, '+', Y, '=', SUM)
     elif operator == '*':
         print(X, '*', Y, '=', X*Y)
+    elif operator == '**':
+        print(X, 'power', Y, '=', X**Y)
     elif operator == '/':
         if Y == 0.0:
             print('Invalid input, Denominator =', Y)
@@ -19,67 +24,66 @@ def calculate(operator):
         sub = X-Y
         print(X, '-', Y, '=', sub)
 
+# converts the numbers to float, can also say if the input is not a number!
+
 
 def convert_float(number):
     try:
         num = float(number)  # string is converted to float
         return num
     except:
+        return 'Input is not a number'
+
+
+while True:
+    user_input = input("Please type>")
+
+    while True:
+        operator = None
+
+        # find the operand and position of the operand
+        if '+' in user_input:
+            operator = '+'
+            pos = user_input.find('+')
+        elif '-' in user_input:
+            operator = '-'
+            pos = user_input.find('-')
+        elif '**' in user_input:
+            operator = '**'
+            pos = user_input.find('**')
+        elif '/' in user_input:
+            operator = '/'
+            pos = user_input.find('/')
+        elif '*' in user_input:
+            operator = '*'
+            pos = user_input.find('*')
+        else:
+            pass
+            #print("Suitable operator not found!")
+
+        # gets the numbers from both sides of the operand
+        if operator != None:
+            num1 = user_input[:pos]
+            X = convert_float(num1)
+            num2 = user_input[pos+1:]
+            Y = convert_float(num2)
+        else:
+            print("Suitable operator not found!")
+        #numbers = [num1, num2]
+        #print("end of the 2nd loop")
+        print(X, Y)
+        break
+
+    # calling the def for calculation
+    # for num in numbers:
+    if X == 'Input is not a number' and Y == 'Input is not a number':
+        print('Inputs are not a number')
+    elif X == 'Input is not a number' or Y == 'Input is not a number':
         print('Input is not a number')
+    else:
+        calculate(operator)
 
+    #print("PRESS 'CRTL+C' to exit")
 
-# def find_operator(user_input):
-if '+' in user_input:
-    operator = '+'
-    pos = user_input.find('+')
-elif '-' in user_input:
-    operator = '-'
-    pos = user_input.find('-')
-elif '*' in user_input:
-    operator = '*'
-    pos = user_input.find('*')
-elif '/' in user_input:
-    operator = '/'
-    pos = user_input.find('/')
-else:
-    print("operator not found")
-
-
-# def get_num(user_input):
-num1 = user_input[:pos]
-X = convert_float(num1)
-num2 = user_input[pos+1:]
-Y = convert_float(num2)
-
-
-# # Start of the loop
-# while True:
-#     x_loop = True
-#     # x input loop starts
-#     while x_loop:
-#         x = input('Please type>')
-#         if x.find('+') > 0:
-#             operator = '+'
-#             pos = x.find('+')
-#             num1 = x[:pos]
-#             X = convert_float(num1)
-#             num2 = x[pos+1:]
-#             Y = convert_float(num2)
-#             x_loop = False
-#         else:
-#             print("type a ...")
-
-#             x_loop = True  # loop continues
-
-#     # Function calling
-
-    # repeat the calculation
-calculate(operator)
-
-
-# user_input = input('Stop calculation? (y):')
-# if 'y' == user_input or 'Y' == user_input:
-#     print('The calculator exits')
-#     break
 
 print('Thank you for using Python calculator')  # End of the loop
