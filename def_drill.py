@@ -7,7 +7,16 @@ def convert_float(number):
         print('Input is not a number')
 
 
-x = input('>')
+def find_operator(user_input):
+    if user_input.find('+') > 0:
+        operator = '+'
+        pos = user_input.find('+')
+        return operator, pos
+    else:
+        print("Operator not found!")
 
-X1 = convert_float(x)
-print(X1)
+
+user_input = input("Type>")
+
+# X1 = convert_float(x)
+print(find_operator(user_input))
