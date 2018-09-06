@@ -1,6 +1,8 @@
 # Python as calculator
 print('*** Welcome to Python calculator ***')
 
+user_input = input("Please type>")
+
 
 def calculate(operator):
     if operator == '+':
@@ -26,35 +28,58 @@ def convert_float(number):
         print('Input is not a number')
 
 
+# def find_operator(user_input):
+if '+' in user_input:
+    operator = '+'
+    pos = user_input.find('+')
+elif '-' in user_input:
+    operator = '-'
+    pos = user_input.find('-')
+elif '*' in user_input:
+    operator = '*'
+    pos = user_input.find('*')
+elif '/' in user_input:
+    operator = '/'
+    pos = user_input.find('/')
+else:
+    print("operator not found")
 
-# Start of the loop
-while True:
-    x_loop = True
-    # x input loop starts
-    while x_loop:
-        x = input('Please type>')
-        if x.find('+') > 0:
-            operator = '+'
-            pos = x.find('+')
-            num1 = x[:pos]
-            X = convert_float(num1)
-            num2 = x[pos+1:]
-            Y = convert_float(num2)
-            x_loop = False
-        else:
-            print("type a ...")
 
-            x_loop = True  # loop continues
+# def get_num(user_input):
+num1 = user_input[:pos]
+X = convert_float(num1)
+num2 = user_input[pos+1:]
+Y = convert_float(num2)
 
-    # Function calling
+
+# # Start of the loop
+# while True:
+#     x_loop = True
+#     # x input loop starts
+#     while x_loop:
+#         x = input('Please type>')
+#         if x.find('+') > 0:
+#             operator = '+'
+#             pos = x.find('+')
+#             num1 = x[:pos]
+#             X = convert_float(num1)
+#             num2 = x[pos+1:]
+#             Y = convert_float(num2)
+#             x_loop = False
+#         else:
+#             print("type a ...")
+
+#             x_loop = True  # loop continues
+
+#     # Function calling
 
     # repeat the calculation
 calculate(operator)
 
 
-user_input = input('Stop calculation? (y):')
-if 'y' == user_input or 'Y' == user_input:
-    print('The calculator exits')
-    break
+# user_input = input('Stop calculation? (y):')
+# if 'y' == user_input or 'Y' == user_input:
+#     print('The calculator exits')
+#     break
 
 print('Thank you for using Python calculator')  # End of the loop
