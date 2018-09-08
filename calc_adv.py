@@ -13,7 +13,7 @@ def calculate(operator):
         print(X, '+', Y, '=', SUM)
     elif operator == '*':
         print(X, '*', Y, '=', X*Y)
-    elif operator == '**':
+    elif operator == multi:
         print(X, 'power', Y, '=', X**Y)
     elif operator == '/':
         if Y == 0.0:
@@ -36,10 +36,13 @@ def convert_float(number):
 
 
 while True:
-    user_input = input("Please type>")
+    user_input = input(">")
 
     while True:
         operator = None
+        X = None
+        Y = None
+        multi = '**'
 
         # find the operand and position of the operand
         if '+' in user_input:
@@ -48,9 +51,9 @@ while True:
         elif '-' in user_input:
             operator = '-'
             pos = user_input.find('-')
-        elif '**' in user_input:
-            operator = '**'
-            pos = user_input.find('**')
+        elif multi in user_input:
+            operator = multi
+            pos = user_input.find(multi)
         elif '/' in user_input:
             operator = '/'
             pos = user_input.find('/')
@@ -58,8 +61,9 @@ while True:
             operator = '*'
             pos = user_input.find('*')
         else:
-            pass
-            #print("Suitable operator not found!")
+            operator = "BAD"
+            # ends the loop if operator not found
+            break
 
         # gets the numbers from both sides of the operand
         if operator != None:
@@ -68,15 +72,15 @@ while True:
             num2 = user_input[pos+1:]
             Y = convert_float(num2)
         else:
-            print("Suitable operator not found!")
-        #numbers = [num1, num2]
-        #print("end of the 2nd loop")
-        print(X, Y)
+            pass
+        print(X, Y, operator)
         break
 
     # calling the def for calculation
     # for num in numbers:
-    if X == 'Input is not a number' and Y == 'Input is not a number':
+    if operator == 'BAD':
+        print ('Suitable operator not found!')
+    elif X == 'Input is not a number' and Y == 'Input is not a number':
         print('Inputs are not a number')
     elif X == 'Input is not a number' or Y == 'Input is not a number':
         print('Input is not a number')
