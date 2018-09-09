@@ -21,20 +21,20 @@ def calculate(operator):
         # print(X, '+', Y, '=', SUM)
         return SUM
     elif operator == '*':
-        print(X, '*', Y, '=', X*Y)
+        #print(X, '*', Y, '=', X*Y)
         return X*Y
     elif operator == "**":
-        print(X, 'power', Y, '=', X**Y)
+        #print(X, 'power', Y, '=', X**Y)
         return X**Y
     elif operator == '/':
         if Y == 0.0:
             print('Invalid input, Denominator =', Y)
         else:
-            print(X, '/', Y, '=', X/Y)
+            #print(X, '/', Y, '=', X/Y)
             return X/Y
     elif operator == '-':
         sub = X-Y
-        print(X, '-', Y, '=', sub)
+        #print(X, '-', Y, '=', sub)
         return sub
     # Ans = SUM or X*Y or X**Y or X/Y or sub
 
