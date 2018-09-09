@@ -1,7 +1,7 @@
 # Python as calculator
 print('*** Welcome to Python calculator ***')
 print("PRESS 'CRTL+C' to exit")
-# converts the numbers to float, can also say if the input is not a number!
+# converts the numbers to float, can also say if the Not a number(NaN!
 
 
 def convert_float(number):
@@ -9,7 +9,7 @@ def convert_float(number):
         num = float(number)  # string is converted to float
         return num
     except:
-        return 'Input is not a number'
+        return 'NaN'
 
 
 # perform the operation
@@ -64,14 +64,14 @@ while True:
             operator = '*'
             pos = user_input.find('*')
         else:
-            print(operator)
+            # print(operator)
             operator = "BAD"
             # ends the loop if operator not found
             break
 
         # gets the numbers from both sides of the operand
 
-        if operator == "**" and convert_float(user_input[:pos]) == 'Input is not a number':
+        if operator == "**" and convert_float(user_input[:pos]) == 'NaN':
             global Ans
             X = Ans
             num2 = user_input[pos+2:]
@@ -81,7 +81,7 @@ while True:
             X = convert_float(num1)
             num2 = user_input[pos+2:]
             Y = convert_float(num2)
-        elif operator != None and convert_float(user_input[:pos]) == 'Input is not a number':
+        elif operator != None and convert_float(user_input[:pos]) == 'NaN':
             X = Ans
             num2 = user_input[pos+1:]
             Y = convert_float(num2)
@@ -99,11 +99,11 @@ while True:
     # calling the def for calculation
     # for num in numbers:
     if operator == 'BAD':
-        print('Suitable operator not found!')
-    elif X == 'Input is not a number' and Y == 'Input is not a number':
+        print('Suitable operator not found!\nAcceptable operators:+,-,*,/,**')
+    elif X == 'NaN' and Y == 'NaN':
         print('Inputs are not a number')
-    elif X == 'Input is not a number' or Y == 'Input is not a number':
-        print('Input is not a number')
+    elif X == 'NaN' or Y == 'NaN':
+        print('One of the inputs is not a number')
     else:
         Ans = calculate(operator)
         # global Ans
