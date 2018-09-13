@@ -61,7 +61,7 @@ plt.imshow(im_max)
 #print(stack[0])
 
 # path_results = '..Part_A_Results/'
-io.imsave(f"{Dir}Stack_of_slice_{stack_pos}_first_{number_of_files}_files.tif", stack)
+#io.imsave(f"{Dir}Stack_of_slice_{stack_pos}_first_{number_of_files}_files.tif", stack)
 io.imsave(f"{Dir}Max_stack_of_slice_{stack_pos}_first_{number_of_files}_files.tif", im_max)
 
 
