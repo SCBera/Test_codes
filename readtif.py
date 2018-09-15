@@ -19,72 +19,14 @@ import os
 #files = glob.glob("*.tif")
 #print(files)
 
-dir = input('Dir>')
-Dir = dir.replace('\\', '/')
-# print(dir)
-# print(Dir)
-
-#stack_pos = input('stack_position>')
-#number_of_files = input('How many files to read>')
-
-
-#def get_filelist(dir, filetype):
-listfiles = []
-for img_files in os.listdir(dir):  # gets the file names
-    if img_files.endswith('.tif'):
-        listfiles.append(img_files)  # lists all the file names
- #       return listfiles
-        # elif len(listfiles) < int(number_of_files) and not img_files.endswith(".tif"):
-        #     print("There is no tif image!")
-        # else:
-        #     print("There is no tif image or file input shoud be more than zero!")
-
-
-# print(len(listfiles))
-#print(listfiles)
-
-img = io.imread(Dir+listfiles[0])
-print(img.dtype)
-#im_new = (img[int(stack_pos)])  # gets the np array of the image of index i
-#print(im_new)
-# io.imshow(img[int(stack_pos)])
-
-stack = np.zeros((int(number_of_files), img.shape[1], img.shape[2]), np.uint16)
-#stack = np.zeros((int(number_of_files), img.shape[1], img.shape[2]), np.float32)
-#
-#while stack_pos.lower() == 'all':
-#    for n in range(0, len(listfiles)):
-#        img = io.imread(Dir+listfiles[n])
-#        new_img = (img[int(stack_pos)-1]) #counting starts from 0 in python
-#        print(f"reading file no.{n+1}")
-#        stack[n, :, :] = new_img
-
-for n in range(0, len(listfiles)):
-    img = io.imread(Dir+listfiles[n])
-    new_img = (img[int(stack_pos)-1]) #counting starts from 0 in python
-    print(f"reading file no.{n+1}")
-    stack[n, :, :] = new_img
-
-
-#print('stack shape:', stack.shape) #prints the z, y, x dimention of the image file
-#print('stack size:', stack.size) # multiplication of z, y and x values
-im_max= np.max(stack, axis=0)
-plt.imshow(im_max, cmap='gray')
-plt.show()
-
-#img_stack = io.imread(stack)
-#im_new_stack = (img_stack[0])
-#print(stack[0])
-
-# path_results = '..Part_A_Results/'
-#io.imsave(f"{Dir}Stack_of_slice_{stack_pos}_first_{number_of_files}_files.tif", stack)
-io.imsave(f"{Dir}Max_stack_of_slice_{stack_pos}_first_{number_of_files}_files.tif", im_max)
-
 
 
 #im = io.imread(Dir + FileName + '.tif')
-#im = io.imread('D:/Codes/test.tif')
-#print(img.shape) # prints the z, y, x dimention of the image file
+#img = io.imread('D:/Codes/test_1.tif')
+#img = io.imread('D:/Codes/test_stack1.tif')
+img = io.imread('D:/Codes/sample_stack1.tif')
+print(img.shape) # prints the z, y, x dimention of the image file
+print(img.min(), img.max(), img.mean())
 #print(im_new.shape) # prints the z, y, x dimention of the image file
 #print(im.shape[0]) # shape[i] where i=0 for Z, i=1 for y and i=2 for x
 
