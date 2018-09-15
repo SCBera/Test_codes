@@ -17,20 +17,21 @@ import os
 #import glob
 
 #files = glob.glob("*.tif")
-#print(files)
-
+# print(files)
 
 
 #im = io.imread(Dir + FileName + '.tif')
 #img = io.imread('D:/Codes/test_1.tif')
 #img = io.imread('D:/Codes/test_stack1.tif')
-img = io.imread('D:/Codes/sample_stack1.tif')
-print(img.shape) # prints the z, y, x dimention of the image file
-print(img.min(), img.max(), img.mean())
-#print(im_new.shape) # prints the z, y, x dimention of the image file
-#print(im.shape[0]) # shape[i] where i=0 for Z, i=1 for y and i=2 for x
+img = (io.imread('D:/Academics/Codes/test_stack1.tif')[0])
+#img = io.imread('D:/Codes/sample_stack1.tif')
+print(type(img))
+print(img.shape)  # prints the z, y, x dimention of the image file
+print(img.min(), img.max(), img.mean(), img.std())
+# print(im_new.shape) # prints the z, y, x dimention of the image file
+# print(im.shape[0]) # shape[i] where i=0 for Z, i=1 for y and i=2 for x
 
-#io.imshow(im_new) # shows the image
+# io.imshow(im_new) # shows the image
 #io.imsave(f"{Dir} {listfiles[1]}_slice_{stack_pos}.tif", im_new)
 #io.imsave(f"{Dir} {FileName}_slice_{stack_pos}_stack.tif", new_stack)
 #
