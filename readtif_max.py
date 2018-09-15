@@ -43,12 +43,12 @@ def get_max_all(filelists):
     else:
         stack = np.zeros((len(filelists), img.shape[1], img.shape[2]), img.dtype)
         for slice in range(0, img.shape[0]):
-            mean = []
             for n in range(0, len(filelists)):
                 img = io.imread(filelists[n])
-                img_mean = img.mean() #gets the mean intensity of image
+                new_img = (img[int(slice)]) #counting starts from 0 in python
                 print(f"reading file no.{n+1}")
-                mean_all = np.array([img_mean])
+                stack[n, :, :] = new_img
+            im_max= np.max(stack, axis=0)
             os.makedirs(Dir+'Processed/', exist_ok=True)
             io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice-{slice+1}_from_{len(filelists)}-files.tif", im_max)
             #io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice_{slice}_{len(filelists)}_files.tif", stack)
