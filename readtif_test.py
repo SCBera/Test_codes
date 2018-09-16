@@ -7,10 +7,10 @@ Save it in a separate folder inside destination folder.
 
 
 Inputs requires during run:
-script -a for automatic mode then files derectory
+'script -a' for automatic mode then files derectory
 
-script -(anything) for manual mode then files derectory that must end with '\' and
-position of the slice/stack need be extracted, number of files to be read.
+'script -(anything)' for manual mode 
+then files derectory, position of the slice/stack need be analyzed and number of files to be read.
 
 The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
 Runs in 64bit environment with Python3 (32/64bit), scikit image, numpy, matplotlib.pyplot, glob
@@ -59,9 +59,13 @@ def get_max_all(filelists):
             mean_all_tm_points.append(mean_all.mean())
             std_all_tm_points.append(mean_all.std())
         results = np.array([tm_points, mean_all_tm_points, std_all_tm_points])
-        os.makedirs(Dir+'Processed/', exist_ok=True)
-        np.savetxt(Dir+'Processed/' + 'Results.csv', results, delimiter=",", header='Time, Avrg_int, YError')
-
+        try:
+            os.makedirs(Dir+'Processed/', exist_ok=True)
+            np.savetxt(Dir+'Processed/' + 'Results.csv', results.T, delimiter=",", header='Time, Avrg_int, YError')
+            #np.savetxt(Dir+'Processed/' + 'Results.csv', (tm_points, mean_all_tm_points, std_all_tm_points),
+            #                   delimiter=",", header='Time, Avrg_int, YError')
+        except:
+            print("Existing results file is not accessible!")
     return results
 
 # This function gives average intesity of selected slice of a time point
@@ -111,8 +115,8 @@ elif sys.argv[1] == '-a':
     tm_int = int(input('Time interval between frames>'))
     filelists = get_filelist(Dir)
     results = get_max_all(filelists)
-    #plt.plot(results[0], results[1], 'o', markersize=3)
-    plt.errorbar(results[0], results[1], yerr = results[2])
+    #plt.plot(results[0], results[1], 'ro-', markersize=3)
+    plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5)
     plt.title('Avrg_int_with_time', fontsize=12)
     #plt.text(0.002,1.035, 'RB', fontsize=12)
     plt.xlabel('Time (min)', fontsize=12)
