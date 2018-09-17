@@ -92,8 +92,8 @@ def get_max_limited(filelists, slice_pos, nfiles):
 
 # This will run if no argument is prodived or the argument is not '-a'
 if len(sys.argv) < 2 or sys.argv[1] != '-a':
-    dir = (input('Directory>') + '\\')
-    Dir = dir.replace('\\', '/')
+    Dir = (input('Directory>') + '\\')
+#    Dir = dir.replace('\\', '/')
     filelists = get_filelist(Dir)
     slice_pos = input('slice_position>')
     nfiles = input('How many files to read>')
@@ -101,8 +101,8 @@ if len(sys.argv) < 2 or sys.argv[1] != '-a':
 #    plt.imshow(result, cmap='gray')
 #    plt.show()
 elif sys.argv[1] == '-a':
-    dir = (input('Directory>') + '\\')
-    Dir = dir.replace('\\', '/')
+    Dir = (input('Directory>') + '\\')
+#    Dir = dir.replace('\\', '/')
     filelists = get_filelist(Dir)
     result = get_max_all(filelists)
 #    plt.imshow(result, cmap='gray')
