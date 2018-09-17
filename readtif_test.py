@@ -9,7 +9,7 @@ Save it in a separate folder inside destination folder.
 Inputs requires during run:
 'script -a' for automatic mode then files derectory
 
-'script -(anything)' for manual mode 
+'script -(anything)' for manual mode
 then files derectory, position of the slice/stack need be analyzed and number of files to be read.
 
 The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
@@ -51,7 +51,7 @@ def get_max_all(filelists):
                 img = io.imread(filelists[n])
                 new_img = (img[slice])
                 filename = ((filelists[n])[(len(filelists[0])-20):])
-                print(f"Reading slice-{slice+1} of file '...{filename}'")
+                print(f"Reading slice-{slice+1} of file ..{filename}")
                 img_mean = new_img.mean()  # gets the mean intensity of image
                 mean.append(img_mean)
             mean_all = np.array([mean])
@@ -61,7 +61,8 @@ def get_max_all(filelists):
         results = np.array([tm_points, mean_all_tm_points, std_all_tm_points])
         try:
             os.makedirs(Dir+'Processed/', exist_ok=True)
-            np.savetxt(Dir+'Processed/' + 'Results.csv', results.T, delimiter=",", header='Time, Avrg_int, YError')
+            np.savetxt(f"{Dir}Processed/Results_from_{len(filelists)}-files.csv",
+                       results.T, delimiter=",", header='Time, Avrg_int, YError')
             #np.savetxt(Dir+'Processed/' + 'Results.csv', (tm_points, mean_all_tm_points, std_all_tm_points),
             #                   delimiter=",", header='Time, Avrg_int, YError')
         except:
@@ -116,12 +117,15 @@ elif sys.argv[1] == '-a':
     filelists = get_filelist(Dir)
     results = get_max_all(filelists)
     #plt.plot(results[0], results[1], 'ro-', markersize=3)
-    plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5)
+    fig = plt.figure()
+    plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5, figure = fig)
     plt.title('Avrg_int_with_time', fontsize=12)
     #plt.text(0.002,1.035, 'RB', fontsize=12)
     plt.xlabel('Time (min)', fontsize=12)
     plt.ylabel('Average Int, (Gray value)', fontsize=12)
+    plt.savefig(f"{Dir}Processed/Results_from_{len(filelists)}-files.png")
     plt.show()
-    plt.close("all")
+    #fig.close()
+    #plt.close("all")
 
 #    print(results[0])
