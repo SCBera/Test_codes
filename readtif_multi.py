@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 18 09:02:20 2018
+Last updated: 19 September, 2018
 
-@author: admin
+This code reads ".tif" files/stacks from given directory (excluding the first file).
+Extracts slices from stacks and make a MAX projection of the slices.
+Save it in a separate folder inside destination folder.
+
+
+Inputs requires during run:
+script -a for automatic mode then files derectory
+
+script -(anything) for manual mode then files derectory that must end with '\' and
+position of the slice/stack need be extracted, number of files to be read.
+
+The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
+Runs in 64bit environment with Python3 (64bit), scikit image, numpy
+Author: Subhas Ch Bera
 """
 from skimage import io
 import matplotlib.pyplot as plt
