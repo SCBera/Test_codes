@@ -1,30 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 18 09:02:20 2018
-Last updated: 19 September, 2018
 
-This code reads ".tif" files/stacks from given directory (excluding the first file).
-Extracts slices from stacks and make a MAX projection of the slices.
-Save it in a separate folder inside destination folder.
-
-
-Inputs requires during run:
-script -a for automatic mode then files derectory
-
-script -(anything) for manual mode then files derectory that must end with '\' and
-position of the slice/stack need be extracted, number of files to be read.
-
-The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
-Runs in 64bit environment with Python3 (64bit), scikit image, numpy
-Author: Subhas Ch Bera ()
+@author: admin
 """
-
-# To Do:
-# 1. Use decorators to decorate functions that need to raise IOError.
-# 2. Matplotlib, use the fig, ax syntax. Not the plt state function.
-# 3. Rewrite the part of the code that requires empty array creation - instead append to a list and convert into an array.
-# 4. Input method should be fully automated
-
 from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
@@ -43,14 +22,15 @@ def dir_out(dir_in):
         dir_out = (dir_ + '_out/')
         return dir_out
     except:
-        raise IOError(f"Unable to make new directory: {dir_in}")
+        print("Ploblem with making new directory!")
 
 
+# This gets the lists of files in the directory given (excluding the first file)
 def get_filelist(dir_, filetype='*.tif'):
-    """This gets the lists of files in the directory given (excluding the first file)
-    """
     files = glob.glob(dir_ + filetype)
-    return files[1:]
+    del files[0] # deletes first file form the list
+    files_mod = files
+    return files_mod
 
 def read_stack(file):
     image = io.imread(file)
@@ -63,11 +43,9 @@ def read_stack(file):
 
 def save_tif(dir_out, list_of_files, slice_t, result, mode):
     try:
-        path = f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif"
-        io.imsave(path, result)
+        io.imsave(f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif", result)
 #        io.imsave(f"{dir_out}{mode}_of_slice-{slice_t + 1}_from_{len(list_of_files)}-files.tif", result)
     except:
-        # raise error here.
         print("Existing image file is not accessible!")
 
 def save_csv(dir_out, list_of_files, result):
@@ -111,11 +89,10 @@ if __name__ == "__main__":
     dir_out = dir_out(dir_)
 
     img = read_stack(list_of_files[0])
-
-    stack = []
-    new_stack_sum = []
-    new_stack_mean = []
-    new_stack_max = []
+    new_stack = np.zeros((len(list_of_files), img.shape[1], img.shape[2]), img.dtype)
+    new_stack_max = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
+    new_stack_mean = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
+    new_stack_sum = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
 
     list_of_mean = []
     list_of_max = []
@@ -132,10 +109,11 @@ if __name__ == "__main__":
             if img.shape[0] < 3:
                 continue
             frame = img[slice_t]
-            filename = ((list_of_files[n])[(len(list_of_files[0])-19):])
-            print(f"reading_slice-{slice_t+1}_of..{filename}")
-            stack.append(frame)
-            new_stack = np.array(stack)
+            # making a new set of stacks for each time point
+#            new_stack = zero_stack(list_of_files, len(list_of_files))
+            new_stack[n, :, :]= frame
+            # saving the newly made stack
+#            save_tif(dir_out, list_of_files, slice_t, new_stack)
 
         list_of_mean.append(new_stack.mean())
         list_of_sum.append(new_stack.sum())
@@ -148,19 +126,19 @@ if __name__ == "__main__":
 #        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
         sum_of_stacks = np.sum(new_stack, axis = 0)
         max_of_stacks = np.max(new_stack, axis = 0)
-
-        new_stack_sum.append(sum_of_stacks)
-        new_stack_mean.append(mean_of_stacks)
-        new_stack_max.append(max_of_stacks)
+#        print(mean_of_stacks)
+        new_stack_max[slice_t, :, :] = max_of_stacks
+        new_stack_mean[slice_t, :, :] = mean_of_stacks
+        new_stack_sum[slice_t, :, :] = sum_of_stacks
 
         # saving the calculated stacks
+        save_tif(dir_out, list_of_files, slice_t, new_stack_max, 'Max')
+        save_tif(dir_out, list_of_files, slice_t, new_stack_mean, 'Mean')
+        save_tif(dir_out, list_of_files, slice_t, new_stack_sum, 'Sum')
+
         result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
 
 #    print(new_stack.sum(), t_points)
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_max), 'Max')
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_mean), 'Mean')
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_sum), 'Sum')
-
     save_csv(dir_out, list_of_files, result_csv)
     plot_save_fig(dir_out, list_of_files, result_csv)
 
