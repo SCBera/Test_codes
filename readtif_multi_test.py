@@ -30,6 +30,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 import os
+import sys
 import glob
 #import sys
 
@@ -105,12 +106,12 @@ def plot_save_fig(dir_out, filelists, results):
 
 if __name__ == "__main__":
     dir_ = get_dir(input("Directory>"))
-    t = input("Time point/interval>")
+    t = int(input("Time point/interval>"))
 
     list_of_files = get_filelist(dir_)
     dir_out = dir_out(dir_)
 
-    img = read_stack(list_of_files[0])
+    # img = read_stack(list_of_files[0])
 
     stack = []
     new_stack_sum = []
@@ -122,20 +123,25 @@ if __name__ == "__main__":
     list_of_sum = []
     list_of_sd = []
     list_of_sem = []
-    t_points = []
+    # t_points = []
 
+    t_dict = {}
+    
+    
+    for file_ in list_of_files:
+        img = read_stack(file_)
+        for slice_t in range(img.shape[0]):
+            if slice_t not in t_dict:
+                t_dict[slice_t] = [img[slice_t]]
+            else:
+                t_dict[slice_t].append(img[slice_t])
 
-    for slice_t in range(0, img.shape[0]):
-        t_points.append(slice_t * float(t))
-        for n in range(0, len(list_of_files)):
-            img = read_stack(list_of_files[n])
-            if img.shape[0] < 3:
-                continue
-            frame = img[slice_t]
-            filename = ((list_of_files[n])[(len(list_of_files[0])-19):])
-            print(f"reading_slice-{slice_t+1}_of..{filename}")
-            stack.append(frame)
-            new_stack = np.array(stack)
+        print(f"Reading_file..{file_[-19:]}")
+
+    t_points = (np.arange(0, img.shape[0]) * t)
+
+    for t in t_dict:
+        new_stack = np.array(t_dict[t])
 
         list_of_mean.append(new_stack.mean())
         list_of_sum.append(new_stack.sum())
@@ -143,9 +149,13 @@ if __name__ == "__main__":
         list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
         list_of_max.append(new_stack.max())
 
+        print(f"Analyzing_time_point_{t+1}")
+    
+            
+
         mean_of_stacks = np.mean(new_stack, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
-#        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
-#        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
+    #        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
+    #        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
         sum_of_stacks = np.sum(new_stack, axis = 0)
         max_of_stacks = np.max(new_stack, axis = 0)
 
@@ -153,8 +163,9 @@ if __name__ == "__main__":
         new_stack_mean.append(mean_of_stacks)
         new_stack_max.append(max_of_stacks)
 
+
         # saving the calculated stacks
-        result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
+    result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
 
 #    print(new_stack.sum(), t_points)
     save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_max), 'Max')
@@ -164,6 +175,7 @@ if __name__ == "__main__":
     save_csv(dir_out, list_of_files, result_csv)
     plot_save_fig(dir_out, list_of_files, result_csv)
 
+    
 
 # if __name__ == "__main__":
 #     # This will run if no argument is prodived or the argument is not '-a'
@@ -201,3 +213,12 @@ if __name__ == "__main__":
 #         #fig.close()
 #         plt.close("all")
 
+    # for slice_t in range(img.shape[0]):
+    #     t_points.append(slice_t * float(t))
+    #     for file_ in list_of_files:
+    #         img = read_stack(file_)
+    #         if img.shape[0] < 3:
+    #             continue
+    #         filename = file_[-19:]
+    #         print(f"reading_slice-{slice_t+1}_of..{filename}", sys.getsizeof(stack))
+    #         stack.append(img[slice_t])
