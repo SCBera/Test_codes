@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
 """
+Created on Tue Sep 18 09:02:20 2018
+Last updated: 19 September, 2018
+
 This code reads ".tif" files/stacks from given directory (excluding the first file).
 Extracts slices from stacks and make a MAX projection of the slices.
 Save it in a separate folder inside destination folder.
@@ -12,134 +16,188 @@ position of the slice/stack need be extracted, number of files to be read.
 
 The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
 Runs in 64bit environment with Python3 (64bit), scikit image, numpy
-Author: Subhas Ch Bera
-Last updated: September 2018
+Author: Subhas Ch Bera ()
 """
 
+# To Do:
+# 1. Use decorators to decorate functions that need to raise IOError.
+# 2. Matplotlib, use the fig, ax syntax. Not the plt state function.
+# 3. Rewrite the part of the code that requires empty array creation - instead append to a list and convert into an array.
+# 4. Input method should be fully automated
+
+from skimage import io
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import os
+import glob
+#import sys
+
+def get_dir(dir_):
+    dir_ = dir_ + "\\"
+    return dir_
+
+def dir_out(dir_in):
+    try:
+        os.makedirs(dir_ + '_out/', exist_ok=True)
+        dir_out = (dir_ + '_out/')
+        return dir_out
+    except:
+        raise IOError(f"Unable to make new directory: {dir_in}")
 
 
+def get_filelist(dir_, filetype='*.tif'):
+    """This gets the lists of files in the directory given (excluding the first file)
+    """
+    files = glob.glob(dir_ + filetype)
+    return files[1:]
 
+def read_stack(file):
+    image = io.imread(file)
+    return image
 
+#def zero_stack(filelists, n):
+#    img = read_stack(filelists[0])
+#    zero_stack = np.zeros((n, img.shape[1], img.shape[2]), img.dtype)
+#    return zero_stack
 
+def save_tif(dir_out, list_of_files, slice_t, result, mode):
+    try:
+        path = f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif"
+        io.imsave(path, result)
+#        io.imsave(f"{dir_out}{mode}_of_slice-{slice_t + 1}_from_{len(list_of_files)}-files.tif", result)
+    except:
+        # raise error here.
+        print("Existing image file is not accessible!")
 
+def save_csv(dir_out, list_of_files, result):
+    try:
+        np.savetxt(f"{dir_out}_results_from_{len(list_of_files)}-files.csv",
+                   result.T, delimiter=",", header='Time, Avrg_int, SD, SE, Sum_int, Max_int')
+    except:
+        print("Existing csv file is not accessible!")
 
-
-# This function gives out of the MAX projection of all the individual slices
-# from all the files in the above list of files
-def get_max_all(filelists):
-    img = io.imread(filelists[0])
-    mean = []
-    mean_all_tm_points = []
-    std_all_tm_points = []
-    se_all = []
-    tm_points =[]
-    #print('image_shape:', img.shape[0])
-    if len(img.shape) < 3:
-        print('\nImage is not a stack! Please choose a stack of images.')
-        result = img
-        return result
-    else:
-        stack = np.zeros((len(filelists), img.shape[1], img.shape[2]), img.dtype)
-        stack1 = np.zeros((len(filelists), img.shape[1], img.shape[2]), dtype=np.uint32)
-        for slice in range(0, img.shape[0]):
-            slice_tm = slice*tm_int
-            tm_points.append(slice_tm)
-            for n in range(0, len(filelists)):
-                img = io.imread(filelists[n])
-                new_img = (img[int(slice)]) #counting starts from 0 in python
-                filename = ((filelists[n])[(len(filelists[0])-20):])
-                print(f"Reading slice-{slice+1} of file ..{filename}")
-                stack[n, :, :] = new_img
-                stack1[n, :, :] = new_img
-                img_mean = new_img.mean()  # gets the mean intensity of slice
-                mean.append(img_mean)
-            im_max = np.max(stack, axis = 0)
-            im_mean = np.mean(stack1, axis = 0)
-            mean_all = np.array([mean]) # making numpy array of all the means
-            mean_all_tm_points.append(mean_all.mean())
-            std_all_tm_points.append(mean_all.std())
-            se_all.append((mean_all.std()/math.sqrt(len(filelists))))
-
-        results = np.array([tm_points, mean_all_tm_points, std_all_tm_points, se_all])
-        try:
-            os.makedirs(Dir+'Processed/', exist_ok=True)
-            np.savetxt(f"{Dir}Processed/Results_from_{len(filelists)}-files.csv",
-                       results.T, delimiter=",", header='Time, Avrg_int, Std, SE')
-            io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice-{slice+1}_from_{len(filelists)}-files.tif", im_max)
-            io.imsave(f"{Dir+'Processed/'}Mean_stack_of_slice-{slice+1}_from_{len(filelists)}-files.tif", im_mean)
-        except:
-            print("Existing results file is not accessible!")
-
-        return im_max
-
-# This function gives out of the MAX projection of selective slices
-# from selective/all the files in the above list of files
-def get_max_limited(filelists, slice_pos, nfiles):
-    img = io.imread(filelists[0])
-    #print('image_shape:', img.shape)
-    if len(img.shape) < 3:
-        print('\nImage is not a stack! Please choose a stack of images.')
-        result = img
-        return result
-    else:
-        stack = np.zeros((len(filelists), img.shape[1], img.shape[2]), img.dtype)
-        if slice_pos.lower() != 'all' and nfiles.lower() == 'all':
-            for n in range(0, len(filelists)):
-                img = io.imread(filelists[n])
-                new_img = (img[int(slice_pos)-1]) #counting starts from 0 in python
-                print(f"reading file no.{n+1}")
-                stack[n, :, :] = new_img
-            im_max= np.max(stack, axis=0)
-            os.makedirs(Dir+'Processed/', exist_ok=True)
-            #io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice_{slice_pos}_{len(filelists)}_files.tif", stack)
-            io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice-{slice_pos}_from_{len(filelists)}-files.tif", im_max)
-
-        elif slice_pos.lower() != 'all' and nfiles.lower() != 'all':
-            for n in range(0, int(nfiles)):
-                img = io.imread(filelists[n])
-                new_img = (img[int(slice_pos)-1]) #counting starts from 0 in python
-                print(f"reading file no.{n+1}")
-                stack[n, :, :] = new_img
-            im_max= np.max(stack, axis=0)
-            os.makedirs(Dir+'Processed/', exist_ok=True)
-            io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice-{slice_pos}_from_{nfiles}-files.tif", im_max)
-            #io.imsave(f"{Dir+'Processed/'}Max_stack_of_slice_{slice_pos}_{nfiles}_files.tif", stack)
-
-    return im_max
-
-if __name__ == "__main__":
-    # This will run if no argument is prodived or the argument is not '-a'
-    if len(sys.argv) < 2 or sys.argv[1] != '-a':
-        Dir = (input('Directory>') + '\\')
-    #    Dir = dir.replace('\\', '/')
-        filelists = get_filelist(Dir)
-        slice_pos = input('slice_position>')
-        nfiles = input('How many files to read>')
-        result = get_max_limited(filelists, slice_pos, nfiles)
-    #    plt.imshow(result, cmap='gray')
-    #    plt.show()
-    elif sys.argv[1] == '-a':
-        Dir = (input('Directory>') + '\\')
-        tm_int = int(input('Time interval between frames>'))
-        filelists = get_filelist(Dir)
-        results = get_max_all(filelists)
-
+def plot_save_fig(dir_out, filelists, results):
+    try:
         fig = plt.figure()
         plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5, figure = fig)
-        plt.title('Avrg_int_with_time', fontsize=12)
+        plt.title('Avrg_int_with_time, SD', fontsize=12)
         plt.xlabel('Time (min)', fontsize=12)
         plt.ylabel('Average Int, (Gray value)', fontsize=12)
-        plt.savefig(f"{Dir}Processed/Avrg_int_with_std_from_{len(filelists)}-files.png")
+        plt.savefig(f"{dir_out}_avrg_int_with_SD_from_{len(filelists)}-files.png")
         plt.show()
+        plt.close()
 
         fig = plt.figure()
         plt.errorbar(results[0], results[1], yerr = results[3], fmt='rs-', linewidth=2, markersize=5, figure = fig)
-        plt.title('Avrg_int_with_time', fontsize=12)
+        plt.title('Avrg_int_with_time, SEM', fontsize=12)
         plt.xlabel('Time (min)', fontsize=12)
         plt.ylabel('Average Int, (Gray value)', fontsize=12)
-        plt.savefig(f"{Dir}Processed/Avrg_int_with_SE_from_{len(filelists)}-files.png")
+        plt.savefig(f"{dir_out}_avrg_int_with_SE_from_{len(filelists)}-files.png")
         plt.show()
+        plt.close()
 
-        #fig.close()
-        plt.close("all")
+    except:
+        print("Problem with saving figure!")
+
+
+
+
+if __name__ == "__main__":
+    dir_ = get_dir(input("Directory>"))
+    t = input("Time point/interval>")
+
+    list_of_files = get_filelist(dir_)
+    dir_out = dir_out(dir_)
+
+    img = read_stack(list_of_files[0])
+
+    stack = []
+    new_stack_sum = []
+    new_stack_mean = []
+    new_stack_max = []
+
+    list_of_mean = []
+    list_of_max = []
+    list_of_sum = []
+    list_of_sd = []
+    list_of_sem = []
+    t_points = []
+
+
+    for slice_t in range(0, img.shape[0]):
+        t_points.append(slice_t * float(t))
+        for n in range(0, len(list_of_files)):
+            img = read_stack(list_of_files[n])
+            if img.shape[0] < 3:
+                continue
+            frame = img[slice_t]
+            filename = ((list_of_files[n])[(len(list_of_files[0])-19):])
+            print(f"reading_slice-{slice_t+1}_of..{filename}")
+            stack.append(frame)
+            new_stack = np.array(stack)
+
+        list_of_mean.append(new_stack.mean())
+        list_of_sum.append(new_stack.sum())
+        list_of_sd.append(new_stack.std())
+        list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
+        list_of_max.append(new_stack.max())
+
+        mean_of_stacks = np.mean(new_stack, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
+#        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
+#        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
+        sum_of_stacks = np.sum(new_stack, axis = 0)
+        max_of_stacks = np.max(new_stack, axis = 0)
+
+        new_stack_sum.append(sum_of_stacks)
+        new_stack_mean.append(mean_of_stacks)
+        new_stack_max.append(max_of_stacks)
+
+        # saving the calculated stacks
+        result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
+
+#    print(new_stack.sum(), t_points)
+    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_max), 'Max')
+    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_mean), 'Mean')
+    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_sum), 'Sum')
+
+    save_csv(dir_out, list_of_files, result_csv)
+    plot_save_fig(dir_out, list_of_files, result_csv)
+
+
+# if __name__ == "__main__":
+#     # This will run if no argument is prodived or the argument is not '-a'
+#     if len(sys.argv) < 2 or sys.argv[1] != '-a':
+#         Dir = (input('Directory>') + '\\')
+#     #    Dir = dir.replace('\\', '/')
+#         filelists = get_filelist(Dir)
+#         slice_pos = input('slice_position>')
+#         nfiles = input('How many files to read>')
+#         result = get_max_limited(filelists, slice_pos, nfiles)
+#     #    plt.imshow(result, cmap='gray')
+#     #    plt.show()
+#     elif sys.argv[1] == '-a':
+#         Dir = (input('Directory>') + '\\')
+#         tm_int = int(input('Time interval between frames>'))
+#         filelists = get_filelist(Dir)
+#         results = get_max_all(filelists)
+
+#         fig = plt.figure()
+#         plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5, figure = fig)
+#         plt.title('Avrg_int_with_time', fontsize=12)
+#         plt.xlabel('Time (min)', fontsize=12)
+#         plt.ylabel('Average Int, (Gray value)', fontsize=12)
+#         plt.savefig(f"{Dir}Processed/Avrg_int_with_std_from_{len(filelists)}-files.png")
+#         plt.show()
+
+#         fig = plt.figure()
+#         plt.errorbar(results[0], results[1], yerr = results[3], fmt='rs-', linewidth=2, markersize=5, figure = fig)
+#         plt.title('Avrg_int_with_time', fontsize=12)
+#         plt.xlabel('Time (min)', fontsize=12)
+#         plt.ylabel('Average Int, (Gray value)', fontsize=12)
+#         plt.savefig(f"{Dir}Processed/Avrg_int_with_SE_from_{len(filelists)}-files.png")
+#         plt.show()
+
+#         #fig.close()
+#         plt.close("all")
 
