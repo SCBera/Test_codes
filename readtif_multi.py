@@ -10,7 +10,7 @@ import numpy as np
 import math
 import os
 import glob
-#import sys
+import sys
 
 def get_dir(dir_):
     dir_ = dir_ + "\\"
@@ -89,6 +89,7 @@ if __name__ == "__main__":
     dir_out = dir_out(dir_)
 
     img = read_stack(list_of_files[0])
+
     new_stack = np.zeros((len(list_of_files), img.shape[1], img.shape[2]), img.dtype)
     new_stack_max = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
     new_stack_mean = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
@@ -108,12 +109,14 @@ if __name__ == "__main__":
             img = read_stack(list_of_files[n])
             if img.shape[0] < 3:
                 continue
-            frame = img[slice_t]
+            file_end = ((list_of_files[n])[-19:])
+            # print(f"reading_slice-{slice_t+1}_of..{file_end}")           
             # making a new set of stacks for each time point
-#            new_stack = zero_stack(list_of_files, len(list_of_files))
-            new_stack[n, :, :]= frame
+            new_stack[n, :, :]= img[slice_t]
+            #print(sys.getsizeof(new_stack))
             # saving the newly made stack
-#            save_tif(dir_out, list_of_files, slice_t, new_stack)
+
+        print(f"reading_slice-{slice_t+1}_of_files")           
 
         list_of_mean.append(new_stack.mean())
         list_of_sum.append(new_stack.sum())
@@ -130,6 +133,7 @@ if __name__ == "__main__":
         new_stack_max[slice_t, :, :] = max_of_stacks
         new_stack_mean[slice_t, :, :] = mean_of_stacks
         new_stack_sum[slice_t, :, :] = sum_of_stacks
+        
 
         # saving the calculated stacks
         save_tif(dir_out, list_of_files, slice_t, new_stack_max, 'Max')
