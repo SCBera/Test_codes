@@ -86,8 +86,8 @@ def plot_save_fig(dir_out, filelists, results):
         plt.xlabel('Time (min)', fontsize=12)
         plt.ylabel('Average Int, (Gray value)', fontsize=12)
         plt.savefig(f"{dir_out}_avrg_int_with_SD_from_{len(filelists)}-files.png")
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
 
         fig = plt.figure()
         plt.errorbar(results[0], results[1], yerr = results[3], fmt='rs-', linewidth=2, markersize=5, figure = fig)
@@ -95,8 +95,8 @@ def plot_save_fig(dir_out, filelists, results):
         plt.xlabel('Time (min)', fontsize=12)
         plt.ylabel('Average Int, (Gray value)', fontsize=12)
         plt.savefig(f"{dir_out}_avrg_int_with_SE_from_{len(filelists)}-files.png")
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
 
     except:
         print("Problem with saving figure!")
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
         list_of_max.append(new_stack.max())
 
-        print(f"Analyzing_time_point_{t+1}")
+        print(f"Analyzing_time_point-{t+1}")
     
             
 
@@ -164,10 +164,10 @@ if __name__ == "__main__":
         new_stack_max.append(max_of_stacks)
 
 
-        # saving the calculated stacks
+    # saving the calculated stacks
     result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
 
-#    print(new_stack.sum(), t_points)
+    # saving the calculated stacks
     save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_max), 'Max')
     save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_mean), 'Mean')
     save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_sum), 'Sum')
@@ -210,15 +210,3 @@ if __name__ == "__main__":
 #         plt.savefig(f"{Dir}Processed/Avrg_int_with_SE_from_{len(filelists)}-files.png")
 #         plt.show()
 
-#         #fig.close()
-#         plt.close("all")
-
-    # for slice_t in range(img.shape[0]):
-    #     t_points.append(slice_t * float(t))
-    #     for file_ in list_of_files:
-    #         img = read_stack(file_)
-    #         if img.shape[0] < 3:
-    #             continue
-    #         filename = file_[-19:]
-    #         print(f"reading_slice-{slice_t+1}_of..{filename}", sys.getsizeof(stack))
-    #         stack.append(img[slice_t])
