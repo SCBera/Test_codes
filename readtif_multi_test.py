@@ -88,7 +88,8 @@ def extract_frame(list_of_files):
                     t_dict[slice_t].append(img[slice_t])
 
         # print(f"Reading_file..{file_[-19:]}, image_shape:{img.shape}")
-    return np.array([np.array(t_dict[key_]) for key_ in t_dict])
+    t_dict = np.array([np.array(t_dict[key_]) for key_ in t_dict])
+    return t_dict
 
 
 def save_tif(dir_out, list_of_files, result, mode):
