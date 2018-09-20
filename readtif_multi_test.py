@@ -16,7 +16,7 @@ position of the slice/stack need be extracted, number of files to be read.
 
 The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
 Runs in 64bit environment with Python3 (64bit), scikit image, numpy
-Author: Subhas Ch Bera ()
+Author: Subhas Ch Bera (and Kesavan)
 """
 
 # To Do:
@@ -57,12 +57,31 @@ def read_stack(file):
     image = io.imread(file)
     return image
 
+def make_dict(list_of_files):
+    t_dict = {}
+    
+    for file_ in list_of_files:
+        img = read_stack(file_)
+        # print("image shape:", img.shape)
+        if img.shape[0] > 300:
+            continue
+        else:
+            for slice_t in range(img.shape[0]):
+                if slice_t not in t_dict:
+                    t_dict[slice_t] = [img[slice_t]]
+                else:
+                    t_dict[slice_t].append(img[slice_t])
+
+        print(f"Reading_file..{file_[-19:]}, image_shape:{img.shape}")
+    return t_dict
+
+
 #def zero_stack(filelists, n):
 #    img = read_stack(filelists[0])
 #    zero_stack = np.zeros((n, img.shape[1], img.shape[2]), img.dtype)
 #    return zero_stack
 
-def save_tif(dir_out, list_of_files, slice_t, result, mode):
+def save_tif(dir_out, list_of_files, result, mode):
     try:
         path = f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif"
         io.imsave(path, result)
@@ -123,22 +142,25 @@ if __name__ == "__main__":
     list_of_sum = []
     list_of_sd = []
     list_of_sem = []
-    # t_points = []
 
-    t_dict = {}
+    # t_dict = {}
     
     
-    for file_ in list_of_files:
-        img = read_stack(file_)
-        for slice_t in range(img.shape[0]):
-            if slice_t not in t_dict:
-                t_dict[slice_t] = [img[slice_t]]
-            else:
-                t_dict[slice_t].append(img[slice_t])
+    # for file_ in list_of_files:
+    #     img = read_stack(file_)
+    #     for slice_t in range(img.shape[0]):
+    #         print(slice_t)
+    #         if slice_t not in t_dict:
+    #             t_dict[slice_t] = [img[slice_t]]
+    #         else:
+    #             t_dict[slice_t].append(img[slice_t])
+    #             print(t_dict)
 
-        print(f"Reading_file..{file_[-19:]}")
+    #     print(f"Reading_file..{file_[-19:]}")
 
-    t_points = (np.arange(0, img.shape[0]) * t)
+    t_dict = make_dict(list_of_files)
+
+    t_points = (np.arange(len(t_dict.keys())) * t)
 
     for t in t_dict:
         new_stack = np.array(t_dict[t])
@@ -150,27 +172,27 @@ if __name__ == "__main__":
         list_of_max.append(new_stack.max())
 
         print(f"Analyzing_time_point-{t+1}")
-    
-            
 
+        sum_of_stacks = np.sum(new_stack, axis = 0)
+        max_of_stacks = np.max(new_stack, axis = 0)
         mean_of_stacks = np.mean(new_stack, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
     #        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
     #        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
-        sum_of_stacks = np.sum(new_stack, axis = 0)
-        max_of_stacks = np.max(new_stack, axis = 0)
 
         new_stack_sum.append(sum_of_stacks)
         new_stack_mean.append(mean_of_stacks)
         new_stack_max.append(max_of_stacks)
 
+    # print(np.array(new_stack_sum, dtype=np.uint8))
+    # exit
 
-    # saving the calculated stacks
+    # saving the calculated stacks in a csv
     result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
 
-    # saving the calculated stacks
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_max), 'Max')
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_mean), 'Mean')
-    save_tif(dir_out, list_of_files, slice_t, np.array(new_stack_sum), 'Sum')
+    # saving the calculated stacks in tif_stack
+    save_tif(dir_out, list_of_files, np.array(new_stack_max), 'Max')
+    save_tif(dir_out, list_of_files, np.array(new_stack_mean, np.uint16), 'Mean')
+    save_tif(dir_out, list_of_files, np.array(new_stack_sum, np.uint32), 'Sum')
 
     save_csv(dir_out, list_of_files, result_csv)
     plot_save_fig(dir_out, list_of_files, result_csv)
