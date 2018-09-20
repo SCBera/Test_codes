@@ -32,7 +32,10 @@ import math
 import os
 import sys
 import glob
-#import sys
+import psutil
+import time
+
+
 
 def get_dir(dir_):
     dir_ = dir_ + "\\"
@@ -62,9 +65,12 @@ def make_dict(list_of_files):
     
     for file_ in list_of_files:
         img = read_stack(file_)
-        # print("image shape:", img.shape)
         if img.shape[0] > 300:
+            print('Stack shape is different!')
             continue
+        elif psutil.virtual_memory()[2] > 90:
+            print('Sytem RAM not sufficient. Quit!')
+            exit()
         else:
             for slice_t in range(img.shape[0]):
                 if slice_t not in t_dict:
@@ -72,8 +78,8 @@ def make_dict(list_of_files):
                 else:
                     t_dict[slice_t].append(img[slice_t])
 
-        print(f"Reading_file..{file_[-19:]}, image_shape:{img.shape}")
-    return t_dict
+        # print(f"Reading_file..{file_[-19:]}, image_shape:{img.shape}")
+    return np.array([np.array(t_dict[key_]) for key_ in t_dict])
 
 
 #def zero_stack(filelists, n):
@@ -127,6 +133,7 @@ if __name__ == "__main__":
     dir_ = get_dir(input("Directory>"))
     t = int(input("Time point/interval>"))
 
+    start = time.time()
     list_of_files = get_filelist(dir_)
     dir_out = dir_out(dir_)
 
@@ -143,27 +150,10 @@ if __name__ == "__main__":
     list_of_sd = []
     list_of_sem = []
 
-    # t_dict = {}
-    
-    
-    # for file_ in list_of_files:
-    #     img = read_stack(file_)
-    #     for slice_t in range(img.shape[0]):
-    #         print(slice_t)
-    #         if slice_t not in t_dict:
-    #             t_dict[slice_t] = [img[slice_t]]
-    #         else:
-    #             t_dict[slice_t].append(img[slice_t])
-    #             print(t_dict)
-
-    #     print(f"Reading_file..{file_[-19:]}")
-
     t_dict = make_dict(list_of_files)
+    t_points = (np.arange(len(t_dict)) * t)
 
-    t_points = (np.arange(len(t_dict.keys())) * t)
-
-    for t in t_dict:
-        new_stack = np.array(t_dict[t])
+    for new_stack in t_dict:
 
         list_of_mean.append(new_stack.mean())
         list_of_sum.append(new_stack.sum())
@@ -171,7 +161,7 @@ if __name__ == "__main__":
         list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
         list_of_max.append(new_stack.max())
 
-        print(f"Analyzing_time_point-{t+1}")
+        # print(f"Analyzing_time_point-{t+1}")
 
         sum_of_stacks = np.sum(new_stack, axis = 0)
         max_of_stacks = np.max(new_stack, axis = 0)
@@ -189,7 +179,7 @@ if __name__ == "__main__":
     # saving the calculated stacks in a csv
     result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
 
-    # saving the calculated stacks in tif_stack
+    # saving the resultent stacks in tif_stack
     save_tif(dir_out, list_of_files, np.array(new_stack_max), 'Max')
     save_tif(dir_out, list_of_files, np.array(new_stack_mean, np.uint16), 'Mean')
     save_tif(dir_out, list_of_files, np.array(new_stack_sum, np.uint32), 'Sum')
@@ -232,3 +222,4 @@ if __name__ == "__main__":
 #         plt.savefig(f"{Dir}Processed/Avrg_int_with_SE_from_{len(filelists)}-files.png")
 #         plt.show()
 
+    print("Total time: ", time.time() - start)
