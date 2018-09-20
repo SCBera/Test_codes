@@ -37,11 +37,20 @@ import time
 
 
 
-def get_dir(dir_):
-    dir_ = dir_ + "\\"
-    return dir_
+def get_dir(dir_in):
+    """This checks the path of the files provided."""
+
+    if os.path.isdir(dir_in) == True:
+        dir_ = dir_in + "\\"
+        return dir_
+    else:
+        # raise IOError(f"No such directory found: {dir_in}")       
+        print(f"No such directory found: {dir_in}")
+        exit()     
+
 
 def dir_out(dir_in):
+    """This makes a new directory '_out' inside the given path."""
     try:
         os.makedirs(dir_ + '_out/', exist_ok=True)
         dir_out = (dir_ + '_out/')
@@ -56,19 +65,19 @@ def get_filelist(dir_, filetype='*.tif'):
     files = glob.glob(dir_ + filetype)
     return files[1:]
 
-def read_stack(file):
-    image = io.imread(file)
-    return image
 
-def make_dict(list_of_files):
+def extract_frame(list_of_files):
+    """This reads all the stacks in a given directory. Separates each frame from each time poins.
+    Gives out a 4D numpy array with total frames, total files, length and width of the image """
+
     t_dict = {}
     
     for file_ in list_of_files:
-        img = read_stack(file_)
+        img = io.imread(file_)
         if img.shape[0] > 300:
             print('Stack shape is different!')
             continue
-        elif psutil.virtual_memory()[2] > 90:
+        elif psutil.virtual_memory()[2] > 80:
             print('Sytem RAM not sufficient. Quit!')
             exit()
         else:
@@ -82,12 +91,8 @@ def make_dict(list_of_files):
     return np.array([np.array(t_dict[key_]) for key_ in t_dict])
 
 
-#def zero_stack(filelists, n):
-#    img = read_stack(filelists[0])
-#    zero_stack = np.zeros((n, img.shape[1], img.shape[2]), img.dtype)
-#    return zero_stack
-
 def save_tif(dir_out, list_of_files, result, mode):
+    """This will save resultant frame or stack in the output folder as '.tif' format"""
     try:
         path = f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif"
         io.imsave(path, result)
@@ -95,15 +100,21 @@ def save_tif(dir_out, list_of_files, result, mode):
     except:
         # raise error here.
         print("Existing image file is not accessible!")
+        exit()
+
 
 def save_csv(dir_out, list_of_files, result):
+    """This will save resultant values in the output folder as a '.csv' format"""
     try:
         np.savetxt(f"{dir_out}_results_from_{len(list_of_files)}-files.csv",
                    result.T, delimiter=",", header='Time, Avrg_int, SD, SE, Sum_int, Max_int')
     except:
         print("Existing csv file is not accessible!")
+        exit()
+
 
 def plot_save_fig(dir_out, filelists, results):
+    """This will plot figure according to the results and saves the figure in the output folder as a '.png' format"""
     try:
         fig = plt.figure()
         plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5, figure = fig)
@@ -125,6 +136,7 @@ def plot_save_fig(dir_out, filelists, results):
 
     except:
         print("Problem with saving figure!")
+        exit()
 
 
 
@@ -137,8 +149,6 @@ if __name__ == "__main__":
     list_of_files = get_filelist(dir_)
     dir_out = dir_out(dir_)
 
-    # img = read_stack(list_of_files[0])
-
     stack = []
     new_stack_sum = []
     new_stack_mean = []
@@ -149,9 +159,13 @@ if __name__ == "__main__":
     list_of_sum = []
     list_of_sd = []
     list_of_sem = []
+ 
+    print("\nReading files...\n")
 
-    t_dict = make_dict(list_of_files)
+    t_dict = extract_frame(list_of_files)
     t_points = (np.arange(len(t_dict)) * t)
+
+    print("\nAnalyzing_time_points...\n")
 
     for new_stack in t_dict:
 

@@ -93,7 +93,7 @@ if __name__ == "__main__":
     new_stack = np.zeros((len(list_of_files), img.shape[1], img.shape[2]), img.dtype)
     new_stack_max = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
     new_stack_mean = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
-    new_stack_sum = np.zeros((img.shape[0], img.shape[1], img.shape[2]), img.dtype)
+    new_stack_sum = np.zeros((img.shape[0], img.shape[1], img.shape[2]), np.int32)
 
     list_of_mean = []
     list_of_max = []
@@ -105,6 +105,9 @@ if __name__ == "__main__":
 
     for slice_t in range(0, img.shape[0]):
         t_points.append(slice_t * float(t))
+
+        print(f"reading_slice-{slice_t+1}_of_files")     
+
         for n in range(0, len(list_of_files)):
             img = read_stack(list_of_files[n])
             if img.shape[0] < 3:
@@ -116,7 +119,6 @@ if __name__ == "__main__":
             #print(sys.getsizeof(new_stack))
             # saving the newly made stack
 
-        print(f"reading_slice-{slice_t+1}_of_files")           
 
         list_of_mean.append(new_stack.mean())
         list_of_sum.append(new_stack.sum())
@@ -124,12 +126,12 @@ if __name__ == "__main__":
         list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
         list_of_max.append(new_stack.max())
 
+        sum_of_stacks = np.sum(new_stack, axis = 0)
+        max_of_stacks = np.max(new_stack, axis = 0)
         mean_of_stacks = np.mean(new_stack, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
 #        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
 #        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
-        sum_of_stacks = np.sum(new_stack, axis = 0)
-        max_of_stacks = np.max(new_stack, axis = 0)
-#        print(mean_of_stacks)
+
         new_stack_max[slice_t, :, :] = max_of_stacks
         new_stack_mean[slice_t, :, :] = mean_of_stacks
         new_stack_sum[slice_t, :, :] = sum_of_stacks
