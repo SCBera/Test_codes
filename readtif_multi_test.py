@@ -152,16 +152,12 @@ if __name__ == "__main__":
     list_of_files = get_filelist(dir_)
     dir_out = dir_out(dir_)
 
-    stack = []
     new_stack_sum = []
     new_stack_mean = []
     new_stack_max = []
 
-    list_of_mean = []
     list_of_mean_all = []
-    list_of_max = []
-    list_of_max_all = []
-    list_of_sum = []
+    list_of_max_all = []    
     list_of_sum_all = []
     list_of_sd_all = []
     list_of_sem_all = []
@@ -177,44 +173,40 @@ if __name__ == "__main__":
 
     for t in t_dict:
 
-        new_stack = np.array(t_dict[t])
+        new_stack_t = np.array(t_dict[t])
 
-        for n in range(len(new_stack)):
-            slice_ = new_stack[n]
+        list_of_mean = []
+
+        # calculates values for each frame of each time points and lists them
+        #
+        for n in range(len(new_stack_t)):
+            slice_ = new_stack_t[n]
 
             list_of_mean.append(slice_.mean())
-            list_of_sum.append(slice_.sum())
-            list_of_max.append(slice_.max())
+            # list_of_sum.append(slice_.sum())
+            # list_of_max.append(slice_.max())
 
+        # calculates mean and sd from all the frames(mean) of a time point and makes lists of
+        # the values of each time points
         list_of_mean_all.append(np.array(list_of_mean).mean())
-        list_of_sum_all.append(np.array(list_of_sum).sum())
         list_of_sd_all.append(np.array(list_of_mean).std())
         list_of_sem_all.append(np.array(list_of_mean).mean()/math.sqrt(len(list_of_files)))
-        list_of_max_all.append(np.array(list_of_max).max())
 
-        # print(list_of_mean, list_of_mean_all)
-        # exit()
-        
-        # list_of_mean.append(new_stack.mean())
-        # list_of_sum.append(new_stack.sum())
-        # list_of_sd.append(new_stack.std())
-        # list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
-        # list_of_max.append(new_stack.max())
+        # listing sum and max values from all the frames of each time points
+        list_of_sum_all.append(new_stack_t.sum())
+        list_of_max_all.append(new_stack_t.max())
 
         # print(f"Analyzing_time_point-{t+1}")
 
-        sum_of_stacks = np.sum(new_stack, axis = 0)
-        max_of_stacks = np.max(new_stack, axis = 0)
-        mean_of_stacks = np.mean(new_stack, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
+        sum_of_stacks = np.sum(new_stack_t, axis = 0)
+        max_of_stacks = np.max(new_stack_t, axis = 0)
+        mean_of_stacks = np.mean(new_stack_t, axis = 0).astype(int) # converts float array to trancated int (eg., 2.9 to 2)
     #        mean_of_stacks = np.mean(new_stack, axis = 0).astype(np.float16) # converts 16bit float
     #        mean_of_stacks = np.rint(np.mean(new_stack, axis = 0)) # rounding float to float
 
         new_stack_sum.append(sum_of_stacks)
         new_stack_mean.append(mean_of_stacks)
         new_stack_max.append(max_of_stacks)
-
-    # print(np.array(new_stack_sum, dtype=np.uint8))
-    # exit
 
     # saving the calculated stacks in a csv
     result_csv = np.array([t_points, list_of_mean_all, list_of_sd_all, list_of_sem_all, list_of_sum_all, list_of_max_all])
