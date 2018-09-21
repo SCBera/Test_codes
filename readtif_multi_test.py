@@ -74,6 +74,8 @@ def extract_frame(list_of_files):
     
     for file_ in list_of_files:
         img = io.imread(file_)
+        # print(img[0])
+
         if img.shape[0] > 300:
             print('Stack shape is different!')
             continue
@@ -88,7 +90,7 @@ def extract_frame(list_of_files):
                     t_dict[slice_t].append(img[slice_t])
 
         # print(f"Reading_file..{file_[-19:]}, image_shape:{img.shape}")
-    t_dict = np.array([np.array(t_dict[key_]) for key_ in t_dict])
+    # t_dict = np.array([np.array(t_dict[key_]) for key_ in t_dict])
     return t_dict
 
 
@@ -156,25 +158,48 @@ if __name__ == "__main__":
     new_stack_max = []
 
     list_of_mean = []
+    list_of_mean_all = []
     list_of_max = []
+    list_of_max_all = []
     list_of_sum = []
-    list_of_sd = []
-    list_of_sem = []
+    list_of_sum_all = []
+    list_of_sd_all = []
+    list_of_sem_all = []
  
     print("\nReading files...\n")
-
+    
     t_dict = extract_frame(list_of_files)
-    t_points = (np.arange(len(t_dict)) * t)
+
+    # t_points = (np.arange(len(t_dict)) * t)
+    t_points = (np.arange(len(t_dict.keys())) * t)
 
     print("\nAnalyzing_time_points...\n")
 
-    for new_stack in t_dict:
+    for t in t_dict:
 
-        list_of_mean.append(new_stack.mean())
-        list_of_sum.append(new_stack.sum())
-        list_of_sd.append(new_stack.std())
-        list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
-        list_of_max.append(new_stack.max())
+        new_stack = np.array(t_dict[t])
+
+        for n in range(len(new_stack)):
+            slice_ = new_stack[n]
+
+            list_of_mean.append(slice_.mean())
+            list_of_sum.append(slice_.sum())
+            list_of_max.append(slice_.max())
+
+        list_of_mean_all.append(np.array(list_of_mean).mean())
+        list_of_sum_all.append(np.array(list_of_sum).sum())
+        list_of_sd_all.append(np.array(list_of_mean).std())
+        list_of_sem_all.append(np.array(list_of_mean).mean()/math.sqrt(len(list_of_files)))
+        list_of_max_all.append(np.array(list_of_max).max())
+
+        # print(list_of_mean, list_of_mean_all)
+        # exit()
+        
+        # list_of_mean.append(new_stack.mean())
+        # list_of_sum.append(new_stack.sum())
+        # list_of_sd.append(new_stack.std())
+        # list_of_sem.append(new_stack.mean()/math.sqrt(len(list_of_files)))
+        # list_of_max.append(new_stack.max())
 
         # print(f"Analyzing_time_point-{t+1}")
 
@@ -192,7 +217,7 @@ if __name__ == "__main__":
     # exit
 
     # saving the calculated stacks in a csv
-    result_csv = np.array([t_points, list_of_mean, list_of_sd, list_of_sem, list_of_sum, list_of_max])
+    result_csv = np.array([t_points, list_of_mean_all, list_of_sd_all, list_of_sem_all, list_of_sum_all, list_of_max_all])
 
     # saving the resultent stacks in tif_stack
     save_tif(dir_out, list_of_files, np.array(new_stack_max), 'Max')
@@ -221,20 +246,5 @@ if __name__ == "__main__":
 #         filelists = get_filelist(Dir)
 #         results = get_max_all(filelists)
 
-#         fig = plt.figure()
-#         plt.errorbar(results[0], results[1], yerr = results[2], fmt='rs-', linewidth=2, markersize=5, figure = fig)
-#         plt.title('Avrg_int_with_time', fontsize=12)
-#         plt.xlabel('Time (min)', fontsize=12)
-#         plt.ylabel('Average Int, (Gray value)', fontsize=12)
-#         plt.savefig(f"{Dir}Processed/Avrg_int_with_std_from_{len(filelists)}-files.png")
-#         plt.show()
 
-#         fig = plt.figure()
-#         plt.errorbar(results[0], results[1], yerr = results[3], fmt='rs-', linewidth=2, markersize=5, figure = fig)
-#         plt.title('Avrg_int_with_time', fontsize=12)
-#         plt.xlabel('Time (min)', fontsize=12)
-#         plt.ylabel('Average Int, (Gray value)', fontsize=12)
-#         plt.savefig(f"{Dir}Processed/Avrg_int_with_SE_from_{len(filelists)}-files.png")
-#         plt.show()
-
-    print("Total time: ", time.time() - start)
+    print("\nTotal time : ", time.time() - start)
