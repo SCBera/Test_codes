@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep 18 09:02:20 2018
-Last updated: 19 September, 2018
-
 This code reads ".tif" files/stacks from given directory (excluding the first file).
 Extracts slices from stacks and make a MAX projection of the slices.
 Save it in a separate folder inside destination folder.
@@ -15,8 +12,11 @@ script -(anything) for manual mode then files derectory that must end with '\' a
 position of the slice/stack need be extracted, number of files to be read.
 
 The code is mostly adopted from:http://www.bioimgtutorials.com/2016/08/03/creating-a-z-stack-in-python/
-Runs in 64bit environment with Python3 (64bit), scikit image, numpy
+Runs in 64bit environment with Python3 (64bit), scikit image, numpy, psutil, math, glob, matplotlib.pyplot
 Author: Subhas Ch Bera (and Kesavan)
+Created on Tue Sep 18 09:02:20 2018
+Last updated: 21 September, 2018
+
 """
 
 # To Do:
@@ -71,17 +71,17 @@ def extract_frame(list_of_files):
     Gives out a 4D numpy array with total frames, total files, length and width of the image """
 
     t_dict = {}
-    
+    nfiles = 0
     for file_ in list_of_files:
         img = io.imread(file_)
-        # print(img[0])
+        nfiles += 1
 
         if img.shape[0] > 300:
             print('Stack shape is different!')
-            continue
-        elif psutil.virtual_memory()[2] > 80:
-            print('Sytem RAM not sufficient. Quit!')
             exit()
+        elif psutil.virtual_memory()[2] > 80:
+            print(f'Sytem RAM not sufficient. Stopes after {nfiles} files!')
+            break
         else:
             for slice_t in range(img.shape[0]):
                 if slice_t not in t_dict:
@@ -99,7 +99,6 @@ def save_tif(dir_out, list_of_files, result, mode):
     try:
         path = f"{dir_out}{mode}_from_{len(list_of_files)}-files.tif"
         io.imsave(path, result)
-#        io.imsave(f"{dir_out}{mode}_of_slice-{slice_t + 1}_from_{len(list_of_files)}-files.tif", result)
     except:
         # raise error here.
         print("Existing image file is not accessible!")
@@ -169,7 +168,7 @@ if __name__ == "__main__":
     # t_points = (np.arange(len(t_dict)) * t)
     t_points = (np.arange(len(t_dict.keys())) * t)
 
-    print("\nAnalyzing_time_points...\n")
+    print("\nAnalyzing time points...\n")
 
     for t in t_dict:
 
@@ -181,16 +180,15 @@ if __name__ == "__main__":
         #
         for n in range(len(new_stack_t)):
             slice_ = new_stack_t[n]
+            slice_ = slice_[slice_ > 0]
 
             list_of_mean.append(slice_.mean())
-            # list_of_sum.append(slice_.sum())
-            # list_of_max.append(slice_.max())
 
         # calculates mean and sd from all the frames(mean) of a time point and makes lists of
         # the values of each time points
         list_of_mean_all.append(np.array(list_of_mean).mean())
         list_of_sd_all.append(np.array(list_of_mean).std())
-        list_of_sem_all.append(np.array(list_of_mean).mean()/math.sqrt(len(list_of_files)))
+        list_of_sem_all.append(np.array(list_of_mean).std()/math.sqrt(len(list_of_files)))
 
         # listing sum and max values from all the frames of each time points
         list_of_sum_all.append(new_stack_t.sum())
@@ -213,7 +211,7 @@ if __name__ == "__main__":
 
     # saving the resultent stacks in tif_stack
     save_tif(dir_out, list_of_files, np.array(new_stack_max), 'Max')
-    save_tif(dir_out, list_of_files, np.array(new_stack_mean, np.uint16), 'Mean')
+    save_tif(dir_out, list_of_files, np.array(new_stack_mean), 'Mean')
     save_tif(dir_out, list_of_files, np.array(new_stack_sum, np.uint32), 'Sum')
 
     save_csv(dir_out, list_of_files, result_csv)
