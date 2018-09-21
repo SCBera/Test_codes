@@ -34,8 +34,7 @@ def get_filelist(Dir, filetype='*.tif'):
 # This function gives average intesity of all the slices of same time point
 # from all the files in the above list of files
 def get_max_all(filelists):
-    img = io.imread(filelists[0])
-    mean = []
+    img = io.imread(filelists[0])    
     mean_all_tm_points = []
     std_all_tm_points = []
     tm_points =[]
@@ -46,6 +45,7 @@ def get_max_all(filelists):
         return result
     else:
         for slice in range(0, img.shape[0]):
+            mean = []
             slice_tm = slice*tm_int
             for n in range(0, len(filelists)):
                 img = io.imread(filelists[n])
@@ -53,11 +53,16 @@ def get_max_all(filelists):
                 filename = ((filelists[n])[(len(filelists[0])-20):])
                 print(f"Reading slice-{slice+1} of file ..{filename}")
                 img_mean = new_img.mean()  # gets the mean intensity of image
+                # print("img_mean:", img_mean)
                 mean.append(img_mean)
+                # print("mean:", mean)
             mean_all = np.array([mean])
+            # print("mean_all:", mean_all)
             tm_points.append(slice_tm)
             mean_all_tm_points.append(mean_all.mean())
+            # print("mean_all_tm-pnt:", mean_all_tm_points)
             std_all_tm_points.append(mean_all.std())
+                    
         results = np.array([tm_points, mean_all_tm_points, std_all_tm_points])
         try:
             os.makedirs(Dir+'Processed/', exist_ok=True)
