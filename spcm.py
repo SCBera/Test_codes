@@ -45,10 +45,8 @@ if __name__ == "__main__":
 
     for (file_set, file_spc) in zip(files_set, files_spc):
 
-            # for file_spc in files_spc:
-
             dir_set = file_set
-            MouseMove(530, 160)
+            MouseMove(530, 160) #setup filename position
             Mouse3click('left', 0.25)
             type_(dir_set)
             time.sleep(1)
@@ -56,7 +54,7 @@ if __name__ == "__main__":
             # print(dir_set)
 
             dir_spc = file_spc
-            MouseMove(530, 415)
+            MouseMove(530, 415) #source filename position
             Mouse3click('left', 0.25)
             type_(dir_spc)
             time.sleep(1)
@@ -65,25 +63,5 @@ if __name__ == "__main__":
             print("Converting file...")
 
             time.sleep(5)
-
-
-            # print(dir_spc)
-
-
-
-
-
-
-
-    # MouseMoveClick(10, 10)
-    # MouseMoveClick(30, 125)
-    # MouseMove(300, 125)
-    # MouseMoveClick(300, 150)
-
-
-
-
-    # MouseMoveClick(300, 760)
-
 
 
