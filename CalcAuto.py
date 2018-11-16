@@ -1,8 +1,8 @@
-import pywinauto
-# from pywinauto import Application
-# from pywinauto.application import Application
+# import pywinauto
+# from pywinauto import application
+from pywinauto.application import application
 
-app = pywinauto.app.Application().Start(cmd_line=u'"C:\\Windows\\system32\\calc.exe" ')
+app = application(backend="uia").Start(cmd_line=u'"C:\\Windows\\system32\\calc.exe" ')
 calcframe = app.CalcFrame
 calcframe.Wait('ready')
 button = calcframe.Button13
@@ -13,7 +13,6 @@ button3 = calcframe.Button17
 button3.Click()
 button4 = calcframe.Button30
 button4.Click()
-
 
 app.Kill_()
 
