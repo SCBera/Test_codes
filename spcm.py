@@ -60,6 +60,7 @@ if __name__ == "__main__":
     files_set = glob.glob(dir_+'*.set')
     files_spc = glob.glob(dir_+'*.spc')
 
+# starting position of the working window. other positions are relative, so handled automatically!
     x = 50
     y = 50
 
