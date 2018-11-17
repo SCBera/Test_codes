@@ -23,8 +23,9 @@ import time
 # win.moveRel(x=0, y=0) # moves relative to the x, y of top-left corner of the window
 # win.clickRel(x=0, y=0, clicks=1, interval=0.0, button=’left’) # click relative to the x, y of top-left corner of the window
 
-def Movewin(x, y):
+def MoveWin(x, y):
     win = pyautogui.getWindow('DPC-230 Emulation - FIFO data files conversion') # returns a “Win” object
+    # Current_win_pos = win.position() # returns (x, y) of top-left corner
     win.move(x, y)
 
 
@@ -59,30 +60,35 @@ if __name__ == "__main__":
     files_set = glob.glob(dir_+'*.set')
     files_spc = glob.glob(dir_+'*.spc')
 
-    # print(files_set, files_spc)
+    x = 50
+    y = 50
 
-    Movewin(100, 100)   # moves the "DPC-230 Emulation - FIFO data files conversion" window
+    MoveWin(x, y)   # moves the "DPC-230 Emulation - FIFO data files conversion" window
                         # at 100, 100 position (top left corner).
+
+    MouseMoveClick(x+50, x)
 
     for (file_set, file_spc) in zip(files_set, files_spc):
 
             dir_set = file_set
-            MouseMove(530, 160) #setup filename position
-            Mouse3click('left', 0.25)
+            MouseMove(x+300, y+65) #setup filename position
+            Mouse3click('left', 0)
             type_(dir_set)
-            time.sleep(1)
+            time.sleep(0.2)
 
             # print(dir_set)
 
             dir_spc = file_spc
-            MouseMove(530, 415) #source filename position
-            Mouse3click('left', 0.25)
+            MouseMove(x+300, y+315) #source filename position
+            Mouse3click('left', 0)
             type_(dir_spc)
+            time.sleep(0.2)
+
+            MouseMoveClick(x+130, y+660)
+            print("Converting file...")
+
             time.sleep(1)
-
-            # MouseMoveClick(300, 760)
-            # print("Converting file...")
-
-            # time.sleep(5)
+            
+    print("Done!")
 
 
