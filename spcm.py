@@ -10,6 +10,24 @@ import time
 #source filename position: 530, 415
 #convertbutton position: 300, 760
 
+## Window handling features:
+# pyautogui.getWindows() # returns a dict of window titles mapped to window IDs
+# pyautogui.getWindow(str_title_or_int_id) # returns a “Win” object
+# win.move(x, y)
+# win.resize(width, height)
+# win.maximize()
+# win.minimize()
+# win.restore()
+# win.close()
+# win.position() # returns (x, y) of top-left corner
+# win.moveRel(x=0, y=0) # moves relative to the x, y of top-left corner of the window
+# win.clickRel(x=0, y=0, clicks=1, interval=0.0, button=’left’) # click relative to the x, y of top-left corner of the window
+
+def Movewin(x, y):
+    win = pyautogui.getWindow('DPC-230 Emulation - FIFO data files conversion') # returns a “Win” object
+    win.move(x, y)
+
+
 def MouseMove(x, y):
     pyautogui.moveTo(x, y)   # moves mouse to X of 100, Y of 200.
     # print(f'Mouse moved to {x}, {y} position!')
@@ -43,6 +61,9 @@ if __name__ == "__main__":
 
     # print(files_set, files_spc)
 
+    Movewin(100, 100)   # moves the "DPC-230 Emulation - FIFO data files conversion" window
+                        # at 100, 100 position (top left corner).
+
     for (file_set, file_spc) in zip(files_set, files_spc):
 
             dir_set = file_set
@@ -59,9 +80,9 @@ if __name__ == "__main__":
             type_(dir_spc)
             time.sleep(1)
 
-            MouseMoveClick(300, 760)
-            print("Converting file...")
+            # MouseMoveClick(300, 760)
+            # print("Converting file...")
 
-            time.sleep(5)
+            # time.sleep(5)
 
 
