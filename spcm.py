@@ -1,4 +1,5 @@
 import pyautogui
+import pyperclip
 import glob
 import time
 
@@ -52,11 +53,13 @@ def type_(dir_in):
     pyautogui.typewrite(dir_in)
 
 if __name__ == "__main__":
+    print("This is tested while \'DPC-230 Emulation - FIFO data files conversion\'window\
+     is open and top of other windows. Please test it before actual use!\n")
 
-    dir_ = input("Dir>")+'\\'
+    dir_ = input("Directory of files>")+'\\'
 
-    # print(dir_)
-
+    
+    # # gets the file names from the directory
     files_set = glob.glob(dir_+'*.set')
     files_spc = glob.glob(dir_+'*.spc')
 
@@ -73,22 +76,27 @@ if __name__ == "__main__":
 
             dir_set = file_set
             MouseMove(x+300, y+65) #setup filename position
-            Mouse3click('left', 0)
-            type_(dir_set)
+            Mouse3click('left', 0.1)
+            # type_(dir_set)
+            pyperclip.copy(dir_set)
+            pyautogui.hotkey("ctrl", "v")
             time.sleep(0.2)
-
-            # print(dir_set)
 
             dir_spc = file_spc
             MouseMove(x+300, y+315) #source filename position
-            Mouse3click('left', 0)
-            type_(dir_spc)
+            Mouse3click('left', 0.1)
+            # type_(dir_spc)                    
+            pyperclip.copy(dir_spc)
+            pyautogui.hotkey("ctrl", "v")
+
             time.sleep(0.2)
 
             MouseMoveClick(x+130, y+660)
             print("Converting file...")
+            # print(dir_set)
+            # print(dir_spc)
 
-            time.sleep(1)
+            time.sleep(2)
             
     print("Done!")
 
