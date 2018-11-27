@@ -1,28 +1,14 @@
+"""
+This program is for automatic conversion of FCS data file acquired in BH.
+
+Author: Subhas Chandra Bera, last updated, 27th Novenber, 2018
+
+"""
 import pyautogui
 import pyperclip
 import glob
 import time
 
-#Menu position: 10, 10
-#Convert position: 30, 125
-#STD file position: 300, 125
-#FIFO file position: 300, 150
-#setup filename position: 530, 160
-#source filename position: 530, 415
-#convertbutton position: 300, 760
-
-## Window handling features:
-# pyautogui.getWindows() # returns a dict of window titles mapped to window IDs
-# pyautogui.getWindow(str_title_or_int_id) # returns a “Win” object
-# win.move(x, y)
-# win.resize(width, height)
-# win.maximize()
-# win.minimize()
-# win.restore()
-# win.close()
-# win.position() # returns (x, y) of top-left corner
-# win.moveRel(x=0, y=0) # moves relative to the x, y of top-left corner of the window
-# win.clickRel(x=0, y=0, clicks=1, interval=0.0, button=’left’) # click relative to the x, y of top-left corner of the window
 
 def MoveWin(x, y):
     win = pyautogui.getWindow('DPC-230 Emulation - FIFO data files conversion') # returns a “Win” object
@@ -63,12 +49,13 @@ if __name__ == "__main__":
     files_set = glob.glob(dir_+'*.set')
     files_spc = glob.glob(dir_+'*.spc')
 
-# starting position of the working window. other positions are relative, so handled automatically!
+# starting position of the working window.
+# other positions are relative, so handled automatically!
     x = 50
     y = 50
 
     MoveWin(x, y)   # moves the "DPC-230 Emulation - FIFO data files conversion" window
-                        # at 100, 100 position (top left corner).
+                    # at 100, 100 position (top left corner).
 
     MouseMoveClick(x+50, x)
 
@@ -77,27 +64,39 @@ if __name__ == "__main__":
             dir_set = file_set
             MouseMove(x+300, y+65) #setup filename position
             Mouse3click('left', 0.1)
-            # type_(dir_set)
+            # type_(dir_set) #type may take long time for longer pathname
             pyperclip.copy(dir_set)
-            pyautogui.hotkey("ctrl", "v")
-            time.sleep(0.2)
+            pyautogui.hotkey("ctrl", "v") #faster
+            time.sleep(0.2) #in second
 
             dir_spc = file_spc
             MouseMove(x+300, y+315) #source filename position
             Mouse3click('left', 0.1)
-            # type_(dir_spc)                    
+            # type_(dir_spc) #type may take long time for longer pathname             
             pyperclip.copy(dir_spc)
-            pyautogui.hotkey("ctrl", "v")
+            pyautogui.hotkey("ctrl", "v") #faster
 
-            time.sleep(0.2)
+            time.sleep(0.2) #in second
 
             MouseMoveClick(x+130, y+660)
             print("Converting file...")
             # print(dir_set)
             # print(dir_spc)
-
-            time.sleep(2)
+            ## carefully choose this to avoid file skipping for longer conversion time
+            time.sleep(5) #in second
             
     print("Done!")
 
 
+## Window handling features:
+# pyautogui.getWindows() # returns a dict of window titles mapped to window IDs
+# pyautogui.getWindow(str_title_or_int_id) # returns a “Win” object
+# win.move(x, y)
+# win.resize(width, height)
+# win.maximize()
+# win.minimize()
+# win.restore()
+# win.close()
+# win.position() # returns (x, y) of top-left corner
+# win.moveRel(x=0, y=0) # moves relative to the x, y of top-left corner of the window
+# win.clickRel(x=0, y=0, clicks=1, interval=0.0, button=’left’) # click relative to the x, y of top-left corner of the window
