@@ -75,15 +75,24 @@ if __name__ == "__main__":
             # type_(dir_spc) #type may take long time for longer pathname             
             pyperclip.copy(dir_spc)
             pyautogui.hotkey("ctrl", "v") #faster
-
             time.sleep(0.2) #in second
+
+            MouseMove(x+300, y+475) #source filename position
+            Mouse3click('left', 0.1)
+            # type_(dir_spc) #type may take long time for longer pathname             
+            pyperclip.copy(dir_spc[:-4]+'_cnvrtd.sdt')
+            pyautogui.hotkey("ctrl", "v") #faster
+            time.sleep(0.2) #in second
+
+
+
 
             MouseMoveClick(x+130, y+660)
             print("Converting file...")
             # print(dir_set)
             # print(dir_spc)
             ## carefully choose this to avoid file skipping for longer conversion time
-            time.sleep(5) #in second
+            time.sleep(1) #in second
             
     print("Done!")
 
