@@ -9,5 +9,11 @@ image2 = cv2.imread("Penguins.jpg")
 # display the image with title "Penguins"
 cv2.imshow('Penguins in gray', image1)
 cv2.imshow('Penguins in color', image2)
-cv2.waitKey(5000) #wait time in milisecond
+cv2.waitKey(2*1000) #wait time in milisecond
+cv2.destroyWindow('Penguins in gray') # destroys specific window
+cv2.waitKey(5*1000) #wait time in milisecond
 cv2.destroyAllWindows()
+
+# save image with name
+cv2.imwrite("Penguins_color.jpg", image2)
+
