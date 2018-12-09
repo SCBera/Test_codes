@@ -3,9 +3,9 @@ import cv2
 
 def read_write_show(image):
     # reads the image in gray mode
-    image1 = cv2.imread("Penguins.jpg", 0)
+    image1 = cv2.imread(image, 0)
     # reads the image in color mode
-    image2 = cv2.imread("Penguins.jpg")
+    image2 = cv2.imread(image)
 
     # display the image with title "Penguins"
     cv2.imshow('Penguins in gray', image1)
@@ -23,7 +23,7 @@ def read_write_show(image):
 if __name__ == "__main__":
 
     # cap = cv2.VideoCapture(camera_index or filename)
-    cap = cv2.VideoCapture('Test_stack.avi')
+    cap = cv2.VideoCapture('Test_stack.tif')
     # cap = cv2.VideoCapture('Test_stack.tif')
 
     n = 0
@@ -32,11 +32,11 @@ if __name__ == "__main__":
         n += 1
         print(ret, frame, n)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         cv2.imshow('frame', frame)
         # cv2.imshow('frame', gray) # play in gray mode
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(1000) & 0xFF == ord('q'):
             break
     cap.release()
     cv2.destroyAllWindows()
