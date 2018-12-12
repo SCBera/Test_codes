@@ -1,4 +1,6 @@
 import numpy as np
+import pylab
+from scipy import ndimage
 import cv2
 
 def read_write_show(image):
@@ -18,12 +20,9 @@ def read_write_show(image):
     # save image with name
     cv2.imwrite("Penguins_color.jpg", image2)
 
-
-
-if __name__ == "__main__":
-
+def read_sequence(stack):
     # cap = cv2.VideoCapture(camera_index or filename)
-    cap = cv2.VideoCapture('Test_stack.tif')
+    cap = cv2.VideoCapture('stack.avi')
     # cap = cv2.VideoCapture('Test_stack.tif')
 
     n = 0
@@ -40,3 +39,29 @@ if __name__ == "__main__":
             break
     cap.release()
     cv2.destroyAllWindows()
+
+
+def count_particles(imagefile):
+    im = cv2.imread(imagefile)
+    pylab.figure(0)
+    pylab.imshow(im)
+
+    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5,5), 0)
+    maxValue = 355
+    adaptiveMethod = cv2.ADAPTIVE_THRESH_GAUSSIAN_C#cv2.ADAPTIVE_THRESH_MEAN_C #cv2.ADAPTIVE_THRESH_GAUSSIAN_C
+    thresholdType = cv2.THRESH_BINARY#cv2.THRESH_BINARY #cv2.THRESH_BINARY_INV
+    blockSize = 5 #odd number like 3,5,7,9,11
+    C = -3 # constant to be subtracted
+    im_thresholded = cv2.adaptiveThreshold(gray, maxValue, adaptiveMethod, thresholdType, blockSize, C) 
+    labelarray, particle_count = ndimage.measurements.label(im_thresholded)
+    print(particle_count)
+    pylab.figure(1)
+    pylab.imshow(im_thresholded)
+    pylab.show()
+
+
+if __name__ == "__main__":
+
+    # im = cv2.imread('test_circles.jpg')
+    count_particles('test_circles.jpg')
