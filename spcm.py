@@ -26,7 +26,7 @@ def check_pxl(img1):
     t1 = time.time()
     # print(img1==img2)
     while img1 != img2:
-        print('start')
+        print('waiting...')
         time.sleep(0.2)
         img2 = pyautogui.pixel(x+290,y+365)
         t2 = time.time() 
@@ -34,7 +34,7 @@ def check_pxl(img1):
             pyautogui.press('enter')
             print("The window was blocked for more than 1 min...pressed 'Enter button'")
             t1 = t2
-            print('end if')
+            # print('end if')
 
 
 def MouseMove(x, y):
