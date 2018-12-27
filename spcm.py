@@ -30,7 +30,7 @@ def check_pxl(img1):
         time.sleep(0.2)
         img2 = pyautogui.pixel(x+290,y+365)
         t2 = time.time() 
-        if t2 - t1 > 30:           
+        if t2 - t1 > 10:           
             pyautogui.press('enter')
             print("The window was blocked for more than 1 min...pressed 'Enter button'")
             t1 = t2
@@ -87,11 +87,13 @@ if __name__ == "__main__":
     img1 = pyautogui.pixel(x+290,y+365)
 
     for (file_set, file_spc) in zip(files_set, files_spc):
+
         check_pxl(img1)
 
         dir_set = file_set
         MouseMove(x+300, y+65) #setup filename position
         Mouse3click('left', 0)
+        pyautogui.press('delete')
         # type_(dir_set) #type may take long time for longer pathname
         pyperclip.copy(dir_set)
         pyautogui.hotkey("ctrl", "v") #faster
@@ -102,6 +104,7 @@ if __name__ == "__main__":
         dir_spc = file_spc
         MouseMove(x+300, y+315) #source filename position
         Mouse3click('left', 0)
+        pyautogui.press('delete')
         # type_(dir_spc) #type may take long time for longer pathname             
         pyperclip.copy(dir_spc)
         pyautogui.hotkey("ctrl", "v") #faster
