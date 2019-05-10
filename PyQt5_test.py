@@ -1,12 +1,20 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtGui import QIcon
+
+
+class window(QMainWindow):
+
+    def __init__(self):
+        super(window, self).__init__()
+        self.setGeometry(1000, 200, 300, 200)
+        self.setWindowTitle('Test!')
+        self.setWindowIcon(QIcon('Penguins.jpg'))
+        self.show()
 
 
 app = QApplication(sys.argv)
-window = QWidget()
-window.setGeometry(1000, 200, 300, 150)  # (top left corner x, y, width, hight)
-window.setWindowTitle('TestWindow!')
 
+GUI = window()
 
-window.show()
 sys.exit(app.exec_())
